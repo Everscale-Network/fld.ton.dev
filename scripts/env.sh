@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-export NETWORK_TYPE="net.ton.dev"
+export NETWORK_TYPE="fld.ton.dev"
 
 SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 export INSTALL_DEPENDENCIES="yes"
