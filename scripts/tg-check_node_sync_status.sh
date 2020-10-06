@@ -2,8 +2,11 @@
 
 # usage: tg-check_node_sync_status.sh [T - timeout sec] [alarm to tg if time > N]
 
-source "$HOME/net.ton.dev/scripts/env.sh"
+SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 
+echo "cd to $SCRIPT_DIR"
+cd $SCRIPT_DIR
+. "${SCRIPT_DIR}/env.sh"
 [[ ! -d $HOME/logs ]] && mkdir -p $HOME/logs
 
 ALARM_TIME_DIFF=$2

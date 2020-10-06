@@ -19,8 +19,7 @@
 ##################################################################################################################
  
 SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
-# shellcheck source=env.sh
-# SCRIPT_DIR=$HOME/net.ton.dev/scripts
+
 echo "cd to $SCRIPT_DIR"
 cd $SCRIPT_DIR
 . "${SCRIPT_DIR}/env.sh"

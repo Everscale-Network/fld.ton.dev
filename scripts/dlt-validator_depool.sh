@@ -149,7 +149,6 @@ ELECTIONS_WORK_DIR="${KEYS_DIR}/elections"
 [[ ! -d ${ELECTIONS_WORK_DIR} ]] && mkdir -p ${ELECTIONS_WORK_DIR}
 chmod +x ${ELECTIONS_WORK_DIR}
 
-# ~/net.ton.dev/ton-labs-contracts/solidity/depool/DePool.abi.json
 DSCs_DIR="$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/depool"
 
 CALL_LC="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub -a 127.0.0.1:3031 -t 5"

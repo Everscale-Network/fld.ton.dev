@@ -28,8 +28,9 @@ exit 0
 [[ $# -le 2 ]] && tr_usage
 
 SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
-# shellcheck source=env.sh
-source "${HOME}/net.ton.dev/scripts/env.sh"
+echo "cd to $SCRIPT_DIR"
+cd $SCRIPT_DIR
+. "${SCRIPT_DIR}/env.sh"
 
 SRC_NAME=$1
 DST_NAME=$2

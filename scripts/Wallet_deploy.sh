@@ -3,7 +3,11 @@
 
 # tonos-cli deploy <MultisigWallet.tvc> '{"owners":["0x...", ...],"reqConfirms":N}' --abi <MultisigWallet.abi.json> --sign <deploy_seed_or_keyfile> --wc <workchain_id>
 
-source "$HOME/net.ton.dev/scripts/env.sh"
+SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
+
+echo "cd to $SCRIPT_DIR"
+cd $SCRIPT_DIR
+. "${SCRIPT_DIR}/env.sh"
 
 WALL_NAME=$1
 MSIG_JSON=${WALL_NAME:-"msig"}
