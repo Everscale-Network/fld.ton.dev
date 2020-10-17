@@ -1,5 +1,24 @@
 #!/bin/bash
 
+# (C) Sergey Tyurin  2020-10-01 11:00:00
+
+# Disclaimer
+##################################################################################################################
+# You running this script/function means you will not blame the author(s)
+# if this breaks your stuff. This script/function is provided AS IS without warranty of any kind. 
+# Author(s) disclaim all implied warranties including, without limitation, 
+# any implied warranties of merchantability or of fitness for a particular purpose. 
+# The entire risk arising out of the use or performance of the sample scripts and documentation remains with you.
+# In no event shall author(s) be held liable for any damages whatsoever 
+# (including, without limitation, damages for loss of business profits, business interruption, 
+# loss of business information, or other pecuniary loss) arising out of the use of or inability 
+# to use the script or documentation. Neither this script/function, 
+# nor any part of it other than those parts that are explicitly copied from others, 
+# may be republished without author(s) express written permission. 
+# Author(s) retain the right to alter this disclaimer at any time.
+##################################################################################################################
+
+export LC_NUMERIC="C"
 # ===================================================
 dec2hex() {
     ival="${1^^}"
@@ -46,10 +65,10 @@ elections_id=$($CALL_LC -rc "runmethod $elector_addr active_election_id" -rc "qu
 LC_OUTPUT="$($CALL_LC -rc "runmethodfull $elector_addr participant_list_extended" -rc "quit" 2>/dev/null)"
 
 # public key : [ stake, max_factor, wallet (addr), adnl (adnl_addr) ]
-PARTS_LIST="$(echo "$LC_OUTPUT" | tr '[' '\n' | awk 'NF>0' | grep ']]' | awk '{print$1 / 1000000000 " "$2 / 65536  " " $3 " " $4}'| sort -r)"
+PARTS_LIST="$(echo "$LC_OUTPUT" | tr '[' '\n' | awk 'NF>0' | grep ']]' | awk '{print$1 / 1000000000 " "$2 / 65536  " " $3 " " $4}'| sort -rn)"
 
-echo "Participants list for elections ID $elections_id : "
-echo "'#' 'stake' 'mf'                                        'address'                     /                  'adnl'"
+echo "Participants list at $(date +'%F %T %Z')  for elections ID $elections_id : "
+echo " '#'    'stake'   'mf'                                       'address'                     /                  'adnl'"
 # echo "$(echo "$PARTS_LIST" | nl )"
 
 total_stake=0
@@ -67,7 +86,7 @@ d_adnl=`echo "$str" | cut -d " " -f 4 | tr -d ']]' | tr -d ')' | awk '{ if(lengt
 h_adnl=`dec2hex "$d_adnl" | awk '{ if(length<64) printf "%0*d%s\n",64-length,0,$0; else print }' | tr "[:upper:]" "[:lower:]"`
 
 printf "%3d" "$i"
-printf " %7d" "$stake"
+printf " %12.3f" "$stake"
 echo " - $mfctr - $h_addr / $h_adnl"
 i=$((i+1))
 done
