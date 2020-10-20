@@ -27,6 +27,7 @@ if [ "${INSTALL_DEPENDENCIES}" = "yes" ]; then
         libmicrohttpd-dev \
         libreadline-dev \
         libssl-dev \
+        libtool \
         libz-dev \
         ninja-build \
         pkg-config \
