@@ -18,11 +18,16 @@ SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 # shellcheck source=env.sh
 . "${SCRIPT_DIR}/env.sh"
 
-MY_ACCOUNT=`cat "${KEYS_DIR}/${HOSTNAME}.addr"`
-[[ -z $MY_ACCOUNT ]] && echo " Can't find ${KEYS_DIR}/${HOSTNAME}.addr"
-
 ACCOUNT=$1
-ACCOUNT=${ACCOUNT:=$MY_ACCOUNT}
+if [[ -z $ACCOUNT ]];then
+    MY_ACCOUNT=`cat "${KEYS_DIR}/${HOSTNAME}.addr"`
+    if [[ -z $MY_ACCOUNT ]];then
+        echo " Can't find ${KEYS_DIR}/${HOSTNAME}.addr"
+        exit 1
+    else
+        ACCOUNT=$MY_ACCOUNT
+    fi
+fi
 
 CALL_LT="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub -a 127.0.0.1:3031"
 
