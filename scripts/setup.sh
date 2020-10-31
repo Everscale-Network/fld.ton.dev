@@ -39,7 +39,7 @@ cd "${KEYS_DIR}"
 "${UTILS_DIR}/generate-random-id" -m keys -n liteserver > "${KEYS_DIR}/keys_l"
 "${UTILS_DIR}/generate-random-id" -m keys -n client > "${KEYS_DIR}/keys_c"
 chmod 600 "${KEYS_DIR}"/*
-[[-d ${ELECTIONS_WORK_DIR} ]] && chmod 700 "${ELECTIONS_WORK_DIR}"
+[[ -d ${ELECTIONS_WORK_DIR} ]] && chmod 700 "${ELECTIONS_WORK_DIR}"
 
 find "${KEYS_DIR}"
 
