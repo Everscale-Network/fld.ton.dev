@@ -31,5 +31,5 @@ export CALL_VC="${TON_BUILD_DIR}/validator-engine-console/validator-engine-conso
 export CALL_TL="$HOME/bin/tvm_linker"
 export CALL_FT="${TON_BUILD_DIR}/crypto/fift -I ${TON_SRC_DIR}/crypto/fift/lib:${TON_SRC_DIR}/crypto/smartcont"
 
-export SCs_DIR="$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/depool"
+export SCs_DIR="$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/safemultisig"
 export DSCs_DIR="$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/depool"
