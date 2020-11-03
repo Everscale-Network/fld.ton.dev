@@ -27,6 +27,7 @@ export LITESERVER_PORT="3031"
 export ENGINE_ADDITIONAL_PARAMS=""
 
 export CALL_LC="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub -a 127.0.0.1:3031 -t 5"
+export CALL_VE="${TON_BUILD_DIR}/validator-engine/validator-engine"
 export CALL_VC="${TON_BUILD_DIR}/validator-engine-console/validator-engine-console -k ${KEYS_DIR}/client -p ${KEYS_DIR}/server.pub -a 127.0.0.1:3030 -t 5"
 export CALL_TL="$HOME/bin/tvm_linker"
 export CALL_FT="${TON_BUILD_DIR}/crypto/fift -I ${TON_SRC_DIR}/crypto/fift/lib:${TON_SRC_DIR}/crypto/smartcont"
