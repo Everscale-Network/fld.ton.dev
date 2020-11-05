@@ -23,6 +23,7 @@ if [ "${INSTALL_DEPENDENCIES}" = "yes" ]; then
         gperf \
         g++ \
         jq \
+        texlive-science \
         libgflags-dev \
         libmicrohttpd-dev \
         libreadline-dev \
