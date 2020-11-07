@@ -8,7 +8,12 @@ verb="${1:-1}"
 echo "INFO: start TON node..."
 echo "INFO: log file = ${TON_WORK_DIR}/node.log"
 
-V_CPU=`sysctl -n hw.ncpu`
+if [[ "$(uname)" == "Linux" ]];then
+    V_CPU=`nproc`
+else
+    V_CPU=`sysctl -n hw.ncpu`
+fi
+
 USE_THREADS=$((V_CPU - 2))
 
 echo
