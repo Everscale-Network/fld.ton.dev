@@ -7,11 +7,11 @@
         "static_nodes": {
             "@type": "dht.nodes",
             "nodes": [
-{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"hyyc3VwH56uoElj/zGsflQQLF2h5VhQj2ZbDolhL1Zk="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1539018784,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"fbQxM7YZQcQ+GU3iADmfNxhBdKc3P0xtK+1o6driNX9OeF79Q2dCtCfKuRovkvsnZA/NngVUrk1wLB7WaKv5Dw=="}
-,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"4oKuDpJdQj4kuXUCcP4DR3BJMRoWuQXPaopZ1S3A/z4="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1539018818,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"t+yVfSV1QPZmWdtrJnC7vZUa3Otqdg4ehTIAj1vcKwCbsAyIaOO+oIkCBkfJ6vAphXonnG2xMTANBaym0r/bAw=="}
-,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"O7quu657WMmTUTlTwF/S6flIstc1A+C7xG7GRtEzA/I="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1539018931,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"DC26gODoPOmnf7Ws+OosMWO7uPsD/eUlx/Vmmls1EcNZUW/gNeJkpD3gQPXY89oNnfl8zSHOWo3WeLfi20m3Cg=="}
-,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"8lPRcAU0blcSgNmjqY28ZsE5HsJf707JiRZ0kbwgcIQ="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1539019029,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"OmU7cswii5tPG71TV4H5kqummptLLBnWbHw4R1Wi9OLW8KcMs0M5RXxxhG/vEEMCqC9TJ0cXdz1f8zGY7fyTCg=="}
-,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"kP9y1wvFyyWVNGMlqeVI18/Y/2PxqtRoKFNCfvu3XYo="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1873055116,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"43v2PBvNdqoQQuAz3oWbDHzVYQjNvuxoYKFdvizyaQgRNwLFX8y/n766dJqs68PGZz2UGWWwfZqLO9cWay4iBw=="}
+{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"yDHD/bJzdrMTdC2M60ql/KfG3W3mSLUqnvBwDbN3xxU="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1539018784,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"aidhlsIuNszHKjhjLdXvspndVChcjCXvPW21rJr/Dk6bcccindP8l22KFhpaoSKOYPR1IwJFRMp77nvRBgSjBg=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"JvQcwAeVKQJsqkMBTyRMrz6p0vnCC0/JEAx3wI6MQck="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1539018818,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"fMb2Ji/lCwKXpchVVlAPSpG4AsH+KVJi0B0b45Wr9JbXhMc5fq3w3wtgz/oyWzlwpQIqCM/sgLu7DD2tZoEsBA=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"O4RfHEgbdpCIr7gbDejJzRBiNZaP/GuvoSZysaRcW0Y="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1539018931,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"7Bp60RS5tiL3w0BggSvMnPRFwK4jIblss8wkolCB8ajd18qA3mFTC6/tqYQG0EaIPd3EMOfKk/m44Mv3KRo3Ag=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"FIG9712bvhaT1FQY5NXdMFlTQpbcRt7TTZfe7/wWyKI="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1539019029,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"19IVpqXDW1x571VBOpHVClTKfOxAR4PlsvoCt90tJxVX/GtNOCK4DIC7i0tOBgonJ9j8IWaHNo15uEwMv4ueAQ=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"5EtWLqVYHaYR4jF7oMQD/2UdwUJP82kl9iipRKzRexo="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1873055116,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"YhysuoCIe/QHNJHZIxMpcNve9zV3GI+ltdf/jMBA20E6r2dGwJe5/JCHHUU8KLVWkGh4uZmmj//+f/i/pkqvAg=="}
             ]
         }
     },
@@ -21,8 +21,8 @@
             "workchain": -1,
             "shard": -9223372036854775808,
             "seqno": 0,
-            "root_hash": "HueWFsT9nPl9neAcU5A4oSRZzMoyQIhqdELpLKlBuy4=",
-            "file_hash": "eKuV9eMOakS3DA9vhA9GNsLGuEXLuIik9qwZY2YpyeU="
+            "root_hash": "Etev63fhvZdVU8elqS4SyS4QVvdxv9CC9laSSrPu8iE=",
+            "file_hash": "Dka18fDru85z2c7BI9dmvL0UNQjGlm1aTsZPCADtzD0="
         }
     }
 }
