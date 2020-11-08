@@ -12,6 +12,8 @@ WALL_NAME=$1
 MSIG_JSON=${WALL_NAME:-"msig"}
 WALL_FILE=${WALL_NAME:-$HOSTNAME}
 
+SetC_Wallet_ABI="$SCRIPT_DIR/../ton-labs-contracts/solidity/setcodemultisig/SetcodeMultisigWallet.abi.json"
+
 echo "MSIG_JSON: $MSIG_JSON"
 
 OWN_PUB_KEY=0x`cat ${KEYS_DIR}/${MSIG_JSON}.keys.json | jq ".public" | tr -d '"'`
@@ -29,7 +31,7 @@ echo
 
 tonos-cli message $WALL_ADDR constructor \
     "{\"owners\":[\"$OWN_PUB_KEY\"],\"reqConfirms\":1}" \
-    --abi ${CONFIGS_DIR}/SafeMultisigWallet.abi.json \
+    --abi ${SetC_Wallet_ABI} \
     --sign ${KEYS_DIR}/${MSIG_JSON}.keys.json --raw --output ${WALL_FILE}-deploy-msg.boc
 
 $CALL_LC -rc "sendfile ${WALL_FILE}-deploy-msg.boc" -rc 'quit' &> ${WALL_FILE}-deploy-result.log
