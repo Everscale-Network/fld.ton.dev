@@ -27,6 +27,9 @@ if [[ -z $ACCOUNT ]];then
     else
         ACCOUNT=$MY_ACCOUNT
     fi
+else
+    acc_fmt="$(echo "$ACCOUNT" |  awk -F ':' '{print $2}')"
+    [[ -z $acc_fmt ]] && ACCOUNT=`cat "${KEYS_DIR}/${ACCOUNT}.addr"`
 fi
 
 CALL_LT="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub -a 127.0.0.1:3031"
@@ -41,7 +44,7 @@ echo
 echo "Account: $ACCOUNT"
 echo "Time Now: $(date  +'%Y-%m-%d %H:%M:%S')"
 echo "Status: $ACC_STATUS"
-echo "Has balance : $((AMOUNT/1000000000)) tokens"
+echo "Has balance : $(LC_NUMERIC=en_US printf "%'.2f" $((AMOUNT/1000000000))) tokens"
 echo "Last operation time: $LAST_TR_TIME"
 # "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "Current balance: $((AMOUNT/1000000000))" 2>&1 > /dev/null
 echo "=================================================================================================="
