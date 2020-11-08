@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # tonos-cli deploy <MultisigWallet.tvc> '{"owners":["0x...", ...],"reqConfirms":N}' --abi <MultisigWallet.abi.json> --sign <deploy_seed_or_keyfile> --wc <workchain_id>
 
 SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
@@ -28,22 +27,12 @@ echo "Public key:    ${OWN_PUB_KEY}"
 echo "WorkChain:     ${Work_Chain}"
 echo
 
+tonos-cli message $WALL_ADDR constructor \
+    "{\"owners\":[\"$OWN_PUB_KEY\"],\"reqConfirms\":1}" \
+    --abi ${CONFIGS_DIR}/SafeMultisigWallet.abi.json \
+    --sign ${KEYS_DIR}/${MSIG_JSON}.keys.json --raw --output ${WALL_FILE}-deploy-msg.boc
 
-read -p "Is this a right wallet (y/n)? " answer
-case ${answer:0:1} in
-    y|Y )
-        tonos-cli deploy \
-	${CONFIGS_DIR}/SafeMultisigWallet.tvc \
-	"{\"owners\":[\"$OWN_PUB_KEY\"],\"reqConfirms\":1}" \
-	--abi ${CONFIGS_DIR}/SafeMultisigWallet.abi.json \
-	--sign ${KEYS_DIR}/${MSIG_JSON}.keys.json \
-	--wc $Work_Chain
-
-    ;;
-    * )
-        echo "Cancelled."
-    ;;
-esac
+$CALL_LC -rc "sendfile ${WALL_FILE}-deploy-msg.boc" -rc 'quit' &> ${WALL_FILE}-deploy-result.log
 
 exit 0
 
