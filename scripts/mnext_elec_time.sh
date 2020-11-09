@@ -167,6 +167,9 @@ if [[ ! -z $NEXT_VAL__EXIST ]] && [[ "$election_id" == "0" ]];then
     NXT_ELECT_2=$CUR_ELECT_2
 fi
 
+#####################
+# STAKE_AMNT=100000
+#####################
 #===================================================
 # sudo crontab -u $SCRPT_USER -r
 # Make crontab content depend of OS
