@@ -24,6 +24,7 @@ if [ "${INSTALL_DEPENDENCIES}" = "yes" ]; then
         g++ \
         jq \
         texlive-science \
+        doxygen-latex \
         libgflags-dev \
         libmicrohttpd-dev \
         libreadline-dev \

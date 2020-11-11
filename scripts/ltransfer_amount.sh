@@ -67,11 +67,11 @@ DST_ACCOUNT=`cat ${KEYS_DIR}/${DST_NAME}.addr`
 SRC_KEY_FILE="${KEYS_DIR}/${1}.keys.json"
 
 echo "Check SRC $SRC_NAME account.."
-ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${SRC_ACCOUNT}" -t "3" -rc "quit" 2>/dev/null `
+ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${SRC_ACCOUNT}" -rc "quit" 2>/dev/null `
 SRC_AMOUNT=`echo "$ACCOUNT_INFO" |grep "account balance" | tr -d "ng"|awk '{print $4}'`
 
 echo "Check DST $DST_NAME account.."
-ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${DST_ACCOUNT}" -t "3" -rc "quit" 2>/dev/null `
+ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${DST_ACCOUNT}" -rc "quit" 2>/dev/null `
 DST_AMOUNT=`echo "$ACCOUNT_INFO" |grep "account balance" | tr -d "ng"|awk '{print $4}'`
 
 echo "TRANFER FROM ${SRC_NAME} :"
@@ -116,12 +116,12 @@ $CALL_LC -rc "sendfile ${SRC_NAME}-SendTokens-msg.boc" -rc 'quit' &> ${SRC_NAME}
 sleep 5s
 
 echo "Check SRC $SRC_NAME account.."
-ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${SRC_ACCOUNT}" -t "3" -rc "quit" 2>/dev/null `
+ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${SRC_ACCOUNT}" -rc "quit" 2>/dev/null `
 SRC_AMOUNT=`echo "$ACCOUNT_INFO" |grep "account balance" | tr -d "ng"|awk '{print $4}'`
 SRC_TIME=`echo "$ACCOUNT_INFO" | grep "last_paid" | gawk -F ":" '{print strftime("%Y-%m-%d %H:%M:%S", $5)}'`
 
 echo "Check DST $DST_NAME account.."
-ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${DST_ACCOUNT}" -t "3" -rc "quit" 2>/dev/null `
+ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${DST_ACCOUNT}" -rc "quit" 2>/dev/null `
 DST_AMOUNT=`echo "$ACCOUNT_INFO" |grep "account balance" | tr -d "ng"|awk '{print $4}'`
 DST_TIME=`echo "$ACCOUNT_INFO" | grep "last_paid" | gawk -F ":" '{print strftime("%Y-%m-%d %H:%M:%S", $5)}'`
 

@@ -32,11 +32,9 @@ else
     [[ -z $acc_fmt ]] && ACCOUNT=`cat "${KEYS_DIR}/${ACCOUNT}.addr"`
 fi
 
-CALL_LT="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub -a 127.0.0.1:3031"
+ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${ACCOUNT}" -rc "quit" 2>/dev/null`
 
-ACCOUNT_INFO=`$CALL_LT -rc "getaccount ${ACCOUNT}" -t "3" -rc "quit" 2>/dev/null `
-
-ACC_STATUS=`echo "$ACCOUNT_INFO" | grep "state:" | awk -F "(" '{ print $2 }'`
+ACC_STATUS=`echo "$ACCOUNT_INFO" | grep 'state:'|tr -d ')'|tr -d '('|cut -d ':' -f 2`
 AMOUNT=`echo "$ACCOUNT_INFO" |grep "account balance" | tr -d "ng"|awk '{print $4}'`
 LAST_TR_TIME=`echo "$ACCOUNT_INFO" | grep "last_paid" | gawk -F ":" '{print strftime("%Y-%m-%d %H:%M:%S", $5)}'`
 
@@ -44,8 +42,8 @@ echo
 echo "Account: $ACCOUNT"
 echo "Time Now: $(date  +'%Y-%m-%d %H:%M:%S')"
 echo "Status: $ACC_STATUS"
-echo "Has balance : $(LC_NUMERIC=en_US printf "%'.2f" $((AMOUNT/1000000000))) tokens"
+echo "Has balance : $(LC_NUMERIC="C" printf "%'.2f" $((AMOUNT/1000000000))) tokens"
 echo "Last operation time: $LAST_TR_TIME"
 # "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "Current balance: $((AMOUNT/1000000000))" 2>&1 > /dev/null
 echo "=================================================================================================="
-
+exit 0
