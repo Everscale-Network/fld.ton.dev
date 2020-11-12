@@ -8,6 +8,8 @@ echo "cd to $SCRIPT_DIR"
 cd $SCRIPT_DIR
 . "${SCRIPT_DIR}/env.sh"
 
+set -x
+
 WALL_NAME=$1
 MSIG_JSON=${WALL_NAME:-"msig"}
 WALL_FILE=${WALL_NAME:-$HOSTNAME}
