@@ -11,6 +11,12 @@ function not_found(){
     echo
     fi
 }
+OS_SYSTEM=`uname`
+if [[ "$OS_SYSTEM" == "Linux" ]];then
+    CALL_BC="bc"
+else
+    CALL_BC="bc -l"
+fi
 
 trap not_found EXIT
 
@@ -42,7 +48,7 @@ echo
 echo "Account: $ACCOUNT"
 echo "Time Now: $(date  +'%Y-%m-%d %H:%M:%S')"
 echo "Status: $ACC_STATUS"
-echo "Has balance : $(LC_NUMERIC="C" printf "%'.2f" $((AMOUNT/1000000000))) tokens"
+echo "Has balance : $(echo "scale=3; $((AMOUNT)) / 1000000000" | $CALL_BC) tokens"
 echo "Last operation time: $LAST_TR_TIME"
 # "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "Current balance: $((AMOUNT/1000000000))" 2>&1 > /dev/null
 echo "=================================================================================================="
