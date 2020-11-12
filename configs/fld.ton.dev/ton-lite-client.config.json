@@ -8,5 +8,15 @@
         "key": "WC5wWBZVb1LOYbqnTiu4krtg/OERaaXrNmZPtWW/OEY="
       }
     }
-  ]
+  ],
+  "validator": {
+    "@type": "validator.config.global",
+    "zero_state": {
+        "workchain": -1,
+        "shard": -9223372036854775808,
+        "seqno": 0,
+        "root_hash": "EB/tQamJ/ndJz3KEWHbehmWdxhtA7xckpg3bTgq0c0s=",
+        "file_hash": "UilptaFIm0uMTBx+JMkD+AOYP8EH9A1ou1ZbUq6iGzE="
+    }
+  }
 }
