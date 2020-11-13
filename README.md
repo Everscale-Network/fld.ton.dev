@@ -8,9 +8,16 @@
 |---|:---|:---|:---|:---|
 | Recommended |12|64|500|1| 
 
-**SSD NVMe** disks are required for /var/ton-work/db storage. 
+**SSD NVMe** disks are required for /var/ton-work storage.
 
-**Recommended kernel for Linux > 5.4**
+Highly advise you to have separate disks:
+
+- SSD disk for system, programs & etc
+
+- dedicated NVMe SSD disk for /var/ton-work
+
+**Recommended kernel version for Linux >5.4**
+
 ## 2. Prerequisites
 ### 2.1 Clone repository
 clone this repositiry to your home folder
@@ -45,6 +52,12 @@ Initialize a node:
 Initialize a node:
 
     $ ./fb-setup.sh
-### 2.4 Wiki
+### 2.4 Run node
+
+    $ ./run.sh
+Check node sync (can take few hours for first time):
+
+    ./check_node_sync_status.sh
+### 2.5 Wiki
 All other information you can find on Free TON Wiki:  
 https://en.freeton.wiki/Free_TON_Wiki
