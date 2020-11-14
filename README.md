@@ -60,6 +60,13 @@ Initialize a node:
 Check node sync (can take few hours for first time):
 
     ./check_node_sync_status.sh
-### 2.5 Wiki
+### 2.5 Receive 100k tokens to your validator account
+
+    cd ~/fld.ton.dev/scripts/
+    Marvin=0:deda155da7c518f57cb664be70b9042ed54a92542769735dfb73d3eef85acdaf
+    DST_ACCOUNT=<your addr>  
+    tonos-cli call "$Marvin" grant "{\"addr\":\"$DST_ACCOUNT\"}" --abi Marvin.abi.json
+
+### 2.6 Wiki
 All other information you can find on Free TON Wiki:  
 https://en.freeton.wiki/Free_TON_Wiki
