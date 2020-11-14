@@ -67,6 +67,10 @@ Check node sync (can take few hours for first time):
     DST_ACCOUNT=<your addr>  
     tonos-cli call "$Marvin" grant "{\"addr\":\"$DST_ACCOUNT\"}" --abi Marvin.abi.json
 
-### 2.6 Wiki
+### 2.6 Informations & support
 All other information you can find on Free TON Wiki:  
 https://en.freeton.wiki/Free_TON_Wiki
+
+Main Free TON site:  https://freeton.org
+
+Telegram chat to support this particular test network: https://t.me/fld_ton_dev  (main language is Russian)
