@@ -4,6 +4,8 @@ SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 # shellcheck source=env.sh
 . "${SCRIPT_DIR}/env.sh"
 
+verb="${1:-1}"
+
 VAL_PID=`ps -ax | grep "validator\-engine" | awk '{print $1}'`
 echo "Engine PID: $VAL_PID"
 
@@ -23,13 +25,13 @@ done
 
 rm -f /var/nodelog/vm-log
 
-./run.sh
+./run.sh $verb
 
 VAL_PID=`ps -ax | grep "validator\-engine" | awk '{print $1}'`
 if [[ -z $VAL_PID ]]; then
   while true
   do
-    ./run.sh
+    ./run.sh $verb
     VAL_PID=`ps -ax | grep "validator\-engine" | awk '{print $1}'`
     [[ ! -z $VAL_PID ]] && break
     echo "### - ALARM !!! Can't start engine."
