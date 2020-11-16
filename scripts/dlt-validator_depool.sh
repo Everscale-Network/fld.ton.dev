@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C) Sergey Tyurin  2020-09-05 15:00:00
+# (C) Sergey Tyurin  2020-11-11 15:00:00
 
 # You have to have installed :
 #   'xxd' - is a part of vim-commons ( [apt/dnf/pkg] install vim[-common] )
@@ -80,6 +80,10 @@ function TD_unix2human() {
 function hex2dec() {
     local OS_SYSTEM=`uname`
     local ival="$(echo ${1^^}|tr -d '"')"
+    if [[ -z $ival ]]; then
+        printf ""
+        return
+    fi
     local ob=${2:-10}
     local ib=${3:-16}
     if [[ "$OS_SYSTEM" == "Linux" ]];then
@@ -127,9 +131,9 @@ function getmid() {
 # Load addresses and set variables
 Depool_addr=`cat ${KEYS_DIR}/depool.addr`
 dpc_addr=`echo $Depool_addr | cut -d ':' -f 2`
-Helper_addr=`cat ${KEYS_DIR}/helper.addr`
-Proxy0_addr=`cat ${KEYS_DIR}/proxy0.addr`
-Proxy1_addr=`cat ${KEYS_DIR}/proxy1.addr`
+#Helper_addr=`cat ${KEYS_DIR}/helper.addr`
+#Proxy0_addr=`cat ${KEYS_DIR}/proxy0.addr`
+#Proxy1_addr=`cat ${KEYS_DIR}/proxy1.addr`
 Validator_addr=`cat ${KEYS_DIR}/${VALIDATOR_NAME}.addr`
 Work_Chain=`echo "${Validator_addr}" | cut -d ':' -f 1`
 
@@ -149,6 +153,7 @@ ELECTIONS_WORK_DIR="${KEYS_DIR}/elections"
 [[ ! -d ${ELECTIONS_WORK_DIR} ]] && mkdir -p ${ELECTIONS_WORK_DIR}
 chmod +x ${ELECTIONS_WORK_DIR}
 
+# ~/net.ton.dev/ton-labs-contracts/solidity/depool/DePool.abi.json
 DSCs_DIR="$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/depool"
 
 CALL_LC="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub -a 127.0.0.1:3031 -t 5"
@@ -237,7 +242,7 @@ File_Round_Proxy="`cat ${KEYS_DIR}/proxy${Proxy_ID}.addr`"
 echo "Proxy addr   from file: $File_Round_Proxy"
 [[ -z $File_Round_Proxy ]] && echo "###-ERROR: Cannot get proxy for this round from file. Can't continue. Exit" && exit 1
 
-DP_Round_Proxy=$($HOME/bin/tvm_linker test -a ${DSCs_DIR}/DePool.abi.json -m getDePoolInfo -p "{}" --decode-c6 $dpc_addr|grep "addStakeFee"|jq ".proxies[$Proxy_ID]"|tr -d '"')
+DP_Round_Proxy=$($HOME/bin/tvm_linker test -a ${DSCs_DIR}/DePool.abi.json -m getDePoolInfo -p "{}" --decode-c6 $dpc_addr|grep "proxies"|jq ".proxies[$Proxy_ID]"|tr -d '"')
 echo "Proxy addr from depool: $DP_Round_Proxy"
 [[ -z $DP_Round_Proxy ]] && echo "###-ERROR: Cannot get proxy for this round from depool contract. Can't continue. Exit" && exit 1
 
@@ -536,5 +541,4 @@ echo "INFO: $(basename "$0") FINISHED $(date +%s) / $(date)"
 
 trap - EXIT
 exit 0
-
 
