@@ -39,4 +39,6 @@ chmod +x tmp_cmd.sh
 
 rm -f tmp_cmd.sh
 
+cat ${HOSTNAME}-glb-dht
+
 exit 0
