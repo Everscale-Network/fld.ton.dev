@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C) Sergey Tyurin  2020-11-11 15:00:00
+# (C) Sergey Tyurin  2020-11-16 15:00:00
 
 # You have to have installed :
 #   'xxd' - is a part of vim-commons ( [apt/dnf/pkg] install vim[-common] )
@@ -51,17 +51,17 @@ SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 #=================================================
 # Test binaries
 if [[ -z $($HOME/bin/tvm_linker -V | grep "TVM linker") ]];then
-    echo "###-ERROR: TVM linker not installed in PATH"
+    echo "###-ERROR(line $LINENO): TVM linker not installed in PATH"
     exit 1
 fi
 
 if [[ -z $(xxd -v 2>&1 | grep "Juergen Weigert") ]];then
-    echo "###-ERROR: 'xxd' not installed in PATH"
+    echo "###-ERROR(line $LINENO): 'xxd' not installed in PATH"
     exit 1
 fi
 
 if [[ -z $(jq --help 2>/dev/null |grep -i "Usage"|cut -d ":" -f 1) ]];then
-    echo "###-ERROR: 'jq' not installed in PATH"
+    echo "###-ERROR(line $LINENO): 'jq' not installed in PATH"
     exit 1
 fi
 
@@ -101,7 +101,7 @@ function Get_SC_current_state() {
     # result: file named xxx...xxx.tvc
     # return: Output of lite-client executing
     local w_acc="$1" 
-    [[ -z $w_acc ]] && echo "###-ERROR: func Get_SC_current_state: empty address" && exit 1
+    [[ -z $w_acc ]] && echo "###-ERROR(line $LINENO): func Get_SC_current_state: empty address" && exit 1
     local s_acc=`echo "${w_acc}" | cut -d ':' -f 2`
     rm -f ${s_acc}.tvc
     trap 'echo LC TIMEOUT EXIT' EXIT
@@ -109,7 +109,8 @@ function Get_SC_current_state() {
     trap - EXIT
     local result=`echo $LC_OUTPUT | grep "written StateInit of account"`
     if [[ -z  $result ]];then
-        echo "###-ERROR: Cannot get account state. Can't continue. Sorry."
+        echo "###-ERROR(line $LINENO):
+ Cannot get account state. Can't continue. Sorry."
         exit 1
     fi
     echo "$LC_OUTPUT"
@@ -127,22 +128,40 @@ function getmid() {
   fi;
   echo $3;
 }
+# Get first number
+function getfst() {
+  if (( $1 <= $2 )); then
+     (( $1 <= $3 )) && { echo $1; return; }
+  fi;
+  if (( $2 <= $1 )); then
+     (( $2 <= $3 )) && { echo $2; return; }
+  fi;
+  echo $3;
+}
+# Get last number
+function getnxt() {
+  if (( $1 >= $2 )); then
+     (( $1 >= $3 )) && { echo $1; return; }
+  fi;
+  if (( $2 >= $1 )); then
+     (( $2 >= $3 )) && { echo $2; return; }
+  fi;
+  echo $3;
+}
 #=================================================
 # Load addresses and set variables
 Depool_addr=`cat ${KEYS_DIR}/depool.addr`
 dpc_addr=`echo $Depool_addr | cut -d ':' -f 2`
-#Helper_addr=`cat ${KEYS_DIR}/helper.addr`
-#Proxy0_addr=`cat ${KEYS_DIR}/proxy0.addr`
-#Proxy1_addr=`cat ${KEYS_DIR}/proxy1.addr`
+
 Validator_addr=`cat ${KEYS_DIR}/${VALIDATOR_NAME}.addr`
 Work_Chain=`echo "${Validator_addr}" | cut -d ':' -f 1`
 
 if [[ -z $Validator_addr ]];then
-    echo "###-ERROR: Can't find validator address! ${KEYS_DIR}/${VALIDATOR_NAME}.addr"
+    echo "###-ERROR(line $LINENO): Can't find validator address! ${KEYS_DIR}/${VALIDATOR_NAME}.addr"
     exit 1
 fi
 if [[ -z $Depool_addr ]];then
-    echo "###-ERROR: Can't find depool address! ${KEYS_DIR}/depool.addr"
+    echo "###-ERROR(line $LINENO): Can't find depool address! ${KEYS_DIR}/depool.addr"
     exit 1
 fi
 
@@ -166,7 +185,7 @@ touch $val_acc_addr
 msig_public=`cat ${KEYS_DIR}/msig.keys.json | jq ".public" | tr -d '"'`
 msig_secret=`cat ${KEYS_DIR}/msig.keys.json | jq ".secret" | tr -d '"'`
 if [[ -z $msig_public ]] || [[ -z $msig_secret ]];then
-    echo "###-ERROR: Can't find validator public and/or secret key!"
+    echo "###-ERROR(line $LINENO): Can't find validator public and/or secret key!"
     exit 1
 fi
 echo "${msig_secret}${msig_public}" > ${KEYS_DIR}/msig.keys.txt
@@ -183,8 +202,8 @@ CURR_TD_NOW=`echo "${VEC_OUTPUT}" | grep unixtime | awk '{print $2}'`
 CHAIN_TD=`echo "${VEC_OUTPUT}" | grep masterchainblocktime | awk '{print $2}'`
 TIME_DIFF=$((CURR_TD_NOW - CHAIN_TD))
 if [[ $TIME_DIFF -gt $TIMEDIFF_MAX ]];then
-    echo "###-ERROR: Your node is not synced. Wait until full sync (<$TIMEDIFF_MAX) Current timediff: $TIME_DIFF"
-    "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "###-ERROR: Your node is not synced. Wait until full sync (<$TIMEDIFF_MAX) Current timediff: $TIME_DIFF" 2>&1 > /dev/null
+    echo "###-ERROR(line $LINENO): Your node is not synced. Wait until full sync (<$TIMEDIFF_MAX) Current timediff: $TIME_DIFF"
+    "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "###-ERROR(line $LINENO): Your node is not synced. Wait until full sync (<$TIMEDIFF_MAX) Current timediff: $TIME_DIFF" 2>&1 > /dev/null
     exit 1
 fi
 echo "INFO: Current TimeDiff: $TIME_DIFF"
@@ -216,10 +235,25 @@ echo -n "Get SC state of depool: $Depool_addr ... "
 LC_OUTPUT="$(Get_SC_current_state "$Depool_addr")"
 result=`echo $LC_OUTPUT | grep "written StateInit of account"`
 if [[ -z  $result ]];then
-    echo "###-ERROR: Cannot get account state. Can't continue. Sorry."
+    echo "###-ERROR(line $LINENO): Cannot get account state. Can't continue. Sorry."
     exit 1
 fi
 echo "Done."
+
+##############################################################################
+# Get proxy adrrs from depool
+Current_Depool_Info=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getDePoolInfo -p "{}" --decode-c6 $dpc_addr|grep -i 'validatorWallet')
+dp_val_wal=$(echo "$Current_Depool_Info" | jq ".validatorWallet")
+dp_proxy0=$(echo "$Current_Depool_Info" | jq "[.proxies[]]|.[0]"|tr -d '"')
+dp_proxy1=$(echo "$Current_Depool_Info" | jq "[.proxies[]]|.[1]"|tr -d '"')
+
+if [[ -z $dp_proxy0 ]] || [[ -z $dp_proxy1 ]];then
+    echo "###-ERROR(line $LINENO): Cannot get proxies from depool contract. Can't continue. Exit" 
+    exit 1
+fi
+
+echo "$dp_proxy0" > ${KEYS_DIR}/proxy0.addr
+echo "$dp_proxy1" > ${KEYS_DIR}/proxy1.addr
 
 ##############################################################################
 # get info from DePool contract state
@@ -240,11 +274,11 @@ Proxy_ID=$((Mid_Round_ID % 2))
 
 File_Round_Proxy="`cat ${KEYS_DIR}/proxy${Proxy_ID}.addr`"
 echo "Proxy addr   from file: $File_Round_Proxy"
-[[ -z $File_Round_Proxy ]] && echo "###-ERROR: Cannot get proxy for this round from file. Can't continue. Exit" && exit 1
+[[ -z $File_Round_Proxy ]] && echo "###-ERROR(line $LINENO) Cannot get proxy for this round from file. Can't continue. Exit" && exit 1
 
 DP_Round_Proxy=$($HOME/bin/tvm_linker test -a ${DSCs_DIR}/DePool.abi.json -m getDePoolInfo -p "{}" --decode-c6 $dpc_addr|grep "proxies"|jq ".proxies[$Proxy_ID]"|tr -d '"')
 echo "Proxy addr from depool: $DP_Round_Proxy"
-[[ -z $DP_Round_Proxy ]] && echo "###-ERROR: Cannot get proxy for this round from depool contract. Can't continue. Exit" && exit 1
+[[ -z $DP_Round_Proxy ]] && echo "###-ERROR(line $LINENO) Cannot get proxy for this round from depool contract. Can't continue. Exit" && exit 1
 
 ########################################################################################
 # Check election conditions
@@ -262,7 +296,7 @@ if [[ -f "${ELECTIONS_WORK_DIR}/stop-election" ]]; then
 fi
 
 if [[ $election_id -ne $Curr_DP_Elec_ID ]]; then
-    echo "###-ERROR: Current elections ID from elector $election_id ($(TD_unix2human "$election_id")) is not equal elections ID from DP: $Curr_DP_Elec_ID ($(TD_unix2human "$Curr_DP_Elec_ID"))"
+    echo "###-ERROR(line $LINENO): Current elections ID from elector $election_id ($(TD_unix2human "$election_id")) is not equal elections ID from DP: $Curr_DP_Elec_ID ($(TD_unix2human "$Curr_DP_Elec_ID"))"
     echo "INFO: $(basename "$0") END $(date +%s) / $(date)"
     exit 1
 fi
@@ -345,7 +379,7 @@ elections_start_before=`echo $CONFIG_PAR_15 | awk '{print $5}'| awk -F ":" '{pri
 elections_end_before=`echo $CONFIG_PAR_15   | awk '{print $6}'| awk -F ":" '{print $2}'`
 stake_held_for=`echo $CONFIG_PAR_15         | awk '{print $7}'| awk -F ":" '{print $2}' | tr -d ')'`
 if [[ -z $validators_elected_for ]] || [[ -z $elections_start_before ]] || [[ -z $elections_end_before ]] || [[ -z $stake_held_for ]];then
-    echo "###-ERROR: Get network election params (p15) FILED!!!"
+    echo "###-ERROR(line $LINENO): Get network election params (p15) FILED!!!"
     exit 1
 fi
 #=================================================
@@ -375,7 +409,8 @@ if [[ -z $New_ADNL_Key ]];then
     New_ADNL_Key=`$CALL_VC -c "newkey" -c "quit" 2>/dev/null | tee "${ELECTIONS_WORK_DIR}/${VALIDATOR_NAME}-election-adnl-key" | grep "created new key" | awk '{print $4}'`
     trap - EXIT
     if [[ -z $New_ADNL_Key ]];then
-        echo "###-ERROR: Generate new ADNL key FILED!!!"
+        echo "###-ERROR(line $LINENO):
+ Generate new ADNL key FILED!!!"
         exit 1
     fi
     echo "ADNL key: $New_ADNL_Key" >> ${ELECTIONS_WORK_DIR}/$election_id
@@ -403,7 +438,7 @@ VC_OUTPUT=`$CALL_VC \
 trap - EXIT
 
 if [[ ! -z $(echo "$VC_OUTPUT" | grep "duplicate election date") ]];then
-    echo "###-WARNING: New keys was added to engine already !!!"
+    echo "###-WARNING(line $LINENO): New keys was added to engine already !!!"
 fi
 echo "INFO: Add new keys to engine ... DONE"
 #=================================================
@@ -415,7 +450,7 @@ SC_Signature=$($CALL_FIFT -s validator-elect-req.fif $DP_Round_Proxy $Validating
         | sed -n 2p)
 
 if [[ -z $SC_Signature ]];then
-    echo "###-ERROR: validator-elect-req.fif NOT processed !!! Can't continue."
+    echo "###-ERROR(line $LINENO): validator-elect-req.fif NOT processed !!! Can't continue."
     exit 1
 else
     echo "INFO: validator-elect-req.fif: $SC_Signature "
@@ -436,7 +471,7 @@ Public_Key=`echo "${VC_OUTPUT}" | grep "got public key" | awk '{print $4}'`
 Signature=`echo "${VC_OUTPUT}" | grep "got signature" | awk '{print $3}'`
 
 if [[ -z $Public_Key ]] || [[ -z $Signature ]];then
-    echo "###-ERROR: Signing  NewElectionKey FILED!!! Can't continue."
+    echo "###-ERROR(line $LINENO): Signing  NewElectionKey FILED!!! Can't continue."
     exit 1
 fi
 
@@ -454,7 +489,7 @@ FIFT_OUTPUT=$($CALL_FIFT -s validator-elect-signed.fif $DP_Round_Proxy $Validati
 
 
 if [[ -z $(echo "$FIFT_OUTPUT" | grep "Message body is" | awk '{print $4}') ]];then
-    echo "###-ERROR: ${ELECTIONS_WORK_DIR}/validator-query.boc NOT created!!! Can't continue"
+    echo "###-ERROR(line $LINENO): ${ELECTIONS_WORK_DIR}/validator-query.boc NOT created!!! Can't continue"
     exit 1
 else
     echo "INFO: ${ELECTIONS_WORK_DIR}/validator-query.boc Created"
@@ -467,29 +502,29 @@ validator_query_payload=$(base64 "${ELECTIONS_WORK_DIR}/validator-query.boc" |tr
 # ===============================================================
 # parameters checks
 if [[ -z $validator_query_payload ]];then
-    echo "###-ERROR: Payload is empty! It is unasseptable!"
+    echo "###-ERROR(line $LINENO): Payload is empty! It is unasseptable!"
     echo "did you have right validator-query.boc ?"
     exit 2
 fi
 
 if [[ -z $val_acc_addr ]];then
-    echo "###-ERROR: Validator Address empty! It is unasseptable!"
+    echo "###-ERROR(line $LINENO): Validator Address empty! It is unasseptable!"
     echo "Check keys files."
     exit 2
 fi
 
 if [[ -z $Depool_addr ]];then
-    echo "###-ERROR: Depool Address empty! It is unasseptable!"
+    echo "###-ERROR(line $LINENO): Depool Address empty! It is unasseptable!"
     exit 2
 fi
 
 if [[ ! -f ${KEYS_DIR}/msig.keys.bin ]];then
-    echo "###-ERROR: ${KEYS_DIR}/msig.keys.bin NOT FOUND! Can't continue"
+    echo "###-ERROR(line $LINENO): ${KEYS_DIR}/msig.keys.bin NOT FOUND! Can't continue"
     exit 2
 fi
 
 if [[ ! -f ${CONFIGS_DIR}/SafeMultisigWallet.abi.json ]];then
-    echo "###-ERROR: ${CONFIGS_DIR}/SafeMultisigWallet.abi.json NOT FOUND! Can't continue"
+    echo "###-ERROR(line $LINENO): ${CONFIGS_DIR}/SafeMultisigWallet.abi.json NOT FOUND! Can't continue"
     exit 2
 fi
 
@@ -504,7 +539,7 @@ TVM_OUTPUT=$($HOME/bin/tvm_linker message $val_acc_addr \
     -w $Work_Chain --setkey ${KEYS_DIR}/msig.keys.bin | tee ${ELECTIONS_WORK_DIR}/TVM_linker-valquery.log)
 
 if [[ -z $(echo $TVM_OUTPUT | grep "boc file created") ]];then
-    echo "###-ERROR: TVM linker CANNOT create boc file!!! Can't continue."
+    echo "###-ERROR(line $LINENO): TVM linker CANNOT create boc file!!! Can't continue."
     exit 3
 fi
 
@@ -524,8 +559,8 @@ trap - EXIT
 vr_result=`cat ${ELECTIONS_WORK_DIR}/validator-req-result.log | grep "external message status is 1"`
 
 if [[ -z $vr_result ]]; then
-    echo "###-ERROR: Send message for eletction FILED!!!"
-    "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "###-ERROR: Send message for eletction FILED!!!" 2>&1 > /dev/null
+    echo "###-ERROR(line $LINENO): Send message for eletction FILED!!!"
+    "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "###-ERROR(line $LINENO): Send message for eletction FILED!!!" 2>&1 > /dev/null
     exit 4
 fi
 
