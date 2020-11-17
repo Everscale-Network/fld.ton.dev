@@ -66,7 +66,7 @@ CALL_LC="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub 
 CALL_TL="$HOME/bin/tvm_linker"
 
 Tik_Payload="te6ccgEBAQEABgAACCiAmCM="
-NANOSTAKE=$((2 * 1000000000))
+NANOSTAKE=$((1 * 1000000000))
 
 ##############################################################################
 # prepare user signature
