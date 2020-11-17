@@ -16,8 +16,12 @@ export TON_BUILD_DIR="${TON_SRC_DIR}/build"
 export TONOS_CLI_SRC_DIR="${NET_TON_DEV_SRC_TOP_DIR}/tonos-cli"
 export UTILS_DIR="${TON_BUILD_DIR}/utils"
 
-export TON_WORK_DIR="/var/ton-work"
-export TON_LOG_DIR="/var/ton-work"
+#WRK_DIR=/dev/shm
+WRK_DIR=/var
+
+export TON_WORK_DIR="$WRK_DIR/ton-work"
+export TON_LOG_DIR="$WRK_DIR/ton-work"
+
 export KEYS_DIR="$HOME/ton-keys"
 export ELECTIONS_WORK_DIR="${KEYS_DIR}/elections"
 

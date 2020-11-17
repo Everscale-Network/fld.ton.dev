@@ -409,8 +409,7 @@ if [[ -z $New_ADNL_Key ]];then
     New_ADNL_Key=`$CALL_VC -c "newkey" -c "quit" 2>/dev/null | tee "${ELECTIONS_WORK_DIR}/${VALIDATOR_NAME}-election-adnl-key" | grep "created new key" | awk '{print $4}'`
     trap - EXIT
     if [[ -z $New_ADNL_Key ]];then
-        echo "###-ERROR(line $LINENO):
- Generate new ADNL key FILED!!!"
+        echo "###-ERROR(line $LINENO): Generate new ADNL key FILED!!!"
         exit 1
     fi
     echo "ADNL key: $New_ADNL_Key" >> ${ELECTIONS_WORK_DIR}/$election_id

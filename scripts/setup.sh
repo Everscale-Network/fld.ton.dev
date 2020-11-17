@@ -24,6 +24,8 @@ sudo chown "${SETUP_USER}:${SETUP_GROUP}" "${TON_WORK_DIR}"
 mkdir -p "${TON_WORK_DIR}/etc"
 mkdir -p "${TON_WORK_DIR}/db"
 
+curl -o ${CONFIGS_DIR}/${NETWORK_TYPE}/ton-global.config.json https://raw.githubusercontent.com/FreeTON-Network/fld.ton.dev/main/configs/fld.ton.dev/ton-global.config.json
+
 cp -f "${CONFIGS_DIR}/${NETWORK_TYPE}/ton-global.config.json" "${TON_WORK_DIR}/etc/ton-global.config.json"
 
 echo "INFO: generate initial ${TON_WORK_DIR}/db/config.json..."
@@ -46,7 +48,7 @@ find "${KEYS_DIR}"
 mv "${KEYS_DIR}/server" "${TON_WORK_DIR}/db/keyring/$(awk '{print $1}' "${KEYS_DIR}/keys_s")"
 mv "${KEYS_DIR}/liteserver" "${TON_WORK_DIR}/db/keyring/$(awk '{print $1}' "${KEYS_DIR}/keys_l")"
 
-awk '{
+awk -v VAL_ENGINE_CONSOLE_PORT="$VAL_ENGINE_CONSOLE_PORT" -v LITESERVER_PORT="$LITESERVER_PORT" '{
     if (NR == 1) {
         server_id = $2
     } else if (NR == 2) {
@@ -58,7 +60,7 @@ awk '{
         if ($1 == "\"control\"") {
             print "      {";
             print "         \"id\": \"" server_id "\","
-            print "         \"port\": 3030,"
+            print "         \"port\": " VAL_ENGINE_CONSOLE_PORT ","
             print "         \"allowed\": ["
             print "            {";
             print "               \"id\": \"" client_id "\","
@@ -69,7 +71,7 @@ awk '{
         } else if ($1 == "\"liteservers\"") {
             print "      {";
             print "         \"id\": \"" liteserver_id "\","
-            print "         \"port\": 3031"
+            print "         \"port\": " LITESERVER_PORT
             print "      }";
         }
     }
@@ -80,3 +82,5 @@ mv "${TON_WORK_DIR}/db/config.json.tmp" "${TON_WORK_DIR}/db/config.json"
 find "${TON_WORK_DIR}"
 
 echo "INFO: setup TON node... DONE"
+
+exit 0

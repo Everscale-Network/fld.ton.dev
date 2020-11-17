@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "SORRY IT IS DOES NOT WORK YET!"
+exit 1
+
 SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 echo "cd to $SCRIPT_DIR"
 cd $SCRIPT_DIR

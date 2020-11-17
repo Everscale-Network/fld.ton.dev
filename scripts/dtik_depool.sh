@@ -35,38 +35,29 @@
 
 # set -x
 
-
 SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 # shellcheck source=env.sh
 . "${SCRIPT_DIR}/env.sh"
 
 ###################
-TIMEDIFF_MAX=50     # 100 sec - max dalay you node from blockchain (default start in cron is after 60-120 sec from elections start)
-SLEEP_TIMEOUT=20    # wait time for depool contract to set on new elections ID
-# Each attempts will cost you a small amount..
+TIMEDIFF_MAX=100
+SLEEP_TIMEOUT=10
 SEND_ATTEMPTS=10
 ###################
 
-echo
-echo "#################################### DePool Tik script #########################################"
-echo "INFO: $(basename "$0") BEGIN $(date +%s) / $(date)"
 
 Depool_addr=`cat ${KEYS_DIR}/depool.addr`
-Helper_addr=`cat ${KEYS_DIR}/helper.addr`
-Proxy0_addr=`cat ${KEYS_DIR}/proxy0.addr`
-Proxy1_addr=`cat ${KEYS_DIR}/proxy1.addr`
+#Helper_addr=`cat ${KEYS_DIR}/helper.addr`
+#Proxy0_addr=`cat ${KEYS_DIR}/proxy0.addr`
+#Proxy1_addr=`cat ${KEYS_DIR}/proxy1.addr`
 Validator_addr=`cat ${KEYS_DIR}/${HOSTNAME}.addr`
 Tik_addr=`cat ${KEYS_DIR}/Tik.addr`
 Tik_Keys_File="${KEYS_DIR}/Tik.keys.json"
 
-echo "Tik contract address: $Tik_addr"
-echo "DePool contract address: $Depool_addr"
-
 Work_Chain=`echo "${Tik_addr}" | cut -d ':' -f 1`
 
-other_depool_to_check=$1
-[[ ! -z $other_depool_to_check ]] && old_depool_addr=$(cat ${KEYS_DIR}/${other_depool_to_check}.addr)
-[[ ! -z $(echo $other_depool_to_check | cut -d ':' -f 2) ]] && old_depool_addr= "$other_depool_to_check"
+old_depool_name=$1
+[[ ! -z $old_depool_name ]] && old_depool_addr=$(cat ${KEYS_DIR}/${old_depool_name}.addr)
 Depool_addr=${old_depool_addr:=$Depool_addr}
 
 ELECTIONS_WORK_DIR="${KEYS_DIR}/elections"
@@ -111,7 +102,7 @@ echo "INFO: Make boc for lite-client ... DONE"
 ###############  Send query by lite-client ###################################
 ##############################################################################
 Last_Trans_lt=$($CALL_LC -rc "getaccount ${Depool_addr}" -t "3" -rc "quit" 2>/dev/null |grep 'last transaction lt'|awk '{print $5}')
-echo "Last Transaction local time: $Last_Trans_lt"
+
 echo "INFO: Send query to Depool by lite-client ..."
 
 Attempts_to_send=$SEND_ATTEMPTS
@@ -129,7 +120,6 @@ while [[ $Attempts_to_send -gt 0 ]]; do
     echo "INFO: Check depool cranked ..."
     sleep $SLEEP_TIMEOUT
     Curr_Trans_lt=$($CALL_LC -rc "getaccount ${Depool_addr}" -t "3" -rc "quit" 2>/dev/null |grep 'last transaction lt'|awk '{print $5}')
-    echo "After Tik Last Transaction local time: $Curr_Trans_lt"
     if [[ $Curr_Trans_lt == $Last_Trans_lt ]];then
         echo "Attempt # $((SEND_ATTEMPTS + 1 - Attempts_to_send))/$SEND_ATTEMPTS"
         echo "+++-WARNING: Depool does not crank up .. Repeat sending.."
