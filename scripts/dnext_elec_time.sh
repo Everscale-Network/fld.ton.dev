@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-# (C) Sergey Tyurin  2020-09-30 15:00:00
+# (C) Sergey Tyurin  2020-11-16 15:00:00
 
 # You have to have installed :
 #   'lite-client'                                               
@@ -158,7 +158,7 @@ $NXT_ELECT_1 * * *    cd ${SCRIPT_DIR} && ./dtik_depool.sh >> /var/ton-work/vali
 $NXT_ELECT_2 * * *    cd ${SCRIPT_DIR} && ./dlt-validator_depool.sh >> /var/ton-work/validator_msig.log
 $NXT_ELECT_3 * * *    cd ${SCRIPT_DIR} && ./Sign_Val_Trans.sh >> /var/ton-work/validator_msig.log
 $NXT_ELECT_4 * * *    cd ${SCRIPT_DIR} && ./dnext_elec_time.sh >> /var/ton-work/validator_msig.log
-$GPL_TIME_MH * * *    cd ${SCRIPT_DIR} && ./get_participant_list.sh > ${election_id}_parts.lst && chmod 444 ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst
+$GPL_TIME_MH * * *    cd ${SCRIPT_DIR} && ./get_participant_list.sh > ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst && chmod 444 ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst
 _ENDCRN_
 )
 
@@ -169,7 +169,7 @@ $NXT_ELECT_1 * * *    script --return --quiet --append --command "cd ${SCRIPT_DI
 $NXT_ELECT_2 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./dlt-validator_depool.sh >> /var/ton-work/validator_msig.log"
 $NXT_ELECT_3 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./Sign_Val_Trans.sh >> /var/ton-work/validator_msig.log"
 $NXT_ELECT_4 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./dnext_elec_time.sh >> /var/ton-work/validator_msig.log"
-$GPL_TIME_MH * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./get_participant_list.sh > ${election_id}_parts.lst && chmod 444 ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst"
+$GPL_TIME_MH * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./get_participant_list.sh > ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst && chmod 444 ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst"
 _ENDCRN_
 )
 
