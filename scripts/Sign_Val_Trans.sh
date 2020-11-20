@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C) Sergey Tyurin  2020-09-06 15:00:00
+# (C) Sergey Tyurin  2020-11-19 15:00:00
 
 # Disclaimer
 ##################################################################################################################
@@ -27,9 +27,9 @@
 # ------------------------------------------------------------------------
 # Script assumes that: 
 #   - all keypairs are in ${KEYS_DIR} folder
-#   - main kepair is msig.keys.json - for create transaction
-#   - other custodians keypair names msig2.keys.json msig3.keys.json etc. Starting from 2
-#   - transaction was signed once by msig.keys.json
+#   use: SignVal_Trans.sh [AccName]
+#      AccName - filename of separate acc with AccName{n}.keys.json keys files
+#      If AccName omitted - will use $HOSTNAME & msig{n}.keys.json
 # ------------------------------------------------------------------------
 
 set -o pipefail
@@ -43,6 +43,14 @@ TIMEDIFF_MAX=100
 SLEEP_TIMEOUT=10
 SEND_ATTEMPTS=10
 ###################
+function sgn_usage(){
+echo
+echo " use: SignVal_Trans.sh [AccName]"
+echo " AccName - filename of separate acc with AccName{n}.keys.json keys files"
+echo " If AccName omitted - will use $HOSTNAME & msig{n}.keys.json"
+echo
+exit 0
+}
 
 echo "######################################## Signing script ########################################"
 echo "INFO: $(basename "$0") BEGIN $(date +%s) / $(date)"
@@ -51,15 +59,54 @@ SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 # shellcheck source=env.sh
 . "${SCRIPT_DIR}/env.sh"
 
+#==================================================
+# Acc by name or default 
+AccName=$1
+if [[ -z $AccName ]];then
+    MSIG_ADDR=`cat "${KEYS_DIR}/${HOSTNAME}.addr"`
+    KeyFileName="msig"
+    if [[ -z $MSIG_ADDR ]];then
+        echo " Can't find ${KEYS_DIR}/${HOSTNAME}.addr" && sgn_usage
+        exit 1
+    fi
+else
+    MSIG_ADDR=`cat "${KEYS_DIR}/${AccName}.addr"`
+    KeyFileName="${AccName}"
+    if [[ -z $MSIG_ADDR ]];then
+        echo " Can't find ${KEYS_DIR}/${AccName}.addr" && sgn_usage
+        exit 1
+    fi
+fi
+
 #=================================================
+# function Get_SC_current_state() { 
+#     rm -f ${val_acc_addr}.tvc
+#     trap 'echo LC TIMEOUT EXIT' EXIT
+#     local LC_OUTPUT=`$CALL_LC -rc "saveaccount ${val_acc_addr}.tvc ${MSIG_ADDR}" -rc "quit" 2>/dev/null | tee ${ELECTIONS_WORK_DIR}/get-acc-state.log`
+#     trap - EXIT
+#     local result=`echo $LC_OUTPUT | grep "written StateInit of account"`
+#     if [[ -z  $result ]];then
+#         echo "###-ERROR: Cannot get account state. Can't continue. Sorry."
+#         exit 1
+#     fi
+#     echo "$LC_OUTPUT"
+# }
+# Get Smart Contract current state by dowloading it & save to file
 function Get_SC_current_state() { 
-    rm -f ${val_acc_addr}.tvc
+    # Input: acc in form x:xxx...xxx
+    # result: file named xxx...xxx.tvc
+    # return: Output of lite-client executing
+    local w_acc="$1" 
+    [[ -z $w_acc ]] && echo "###-ERROR(line $LINENO): func Get_SC_current_state: empty address" && exit 1
+    local s_acc=`echo "${w_acc}" | cut -d ':' -f 2`
+    rm -f ${s_acc}.tvc
     trap 'echo LC TIMEOUT EXIT' EXIT
-    local LC_OUTPUT=`$CALL_LC -rc "saveaccount ${val_acc_addr}.tvc ${MSIG_ADDR}" -rc "quit" 2>/dev/null | tee ${ELECTIONS_WORK_DIR}/get-acc-state.log`
+    local LC_OUTPUT=`$CALL_LC -rc "saveaccount ${s_acc}.tvc ${w_acc}" -rc "quit" 2>/dev/null`
     trap - EXIT
     local result=`echo $LC_OUTPUT | grep "written StateInit of account"`
     if [[ -z  $result ]];then
-        echo "###-ERROR: Cannot get account state. Can't continue. Sorry."
+        echo "###-ERROR(line $LINENO):
+ Cannot get account state. Can't continue. Sorry."
         exit 1
     fi
     echo "$LC_OUTPUT"
@@ -88,11 +135,11 @@ CALL_VC="${TON_BUILD_DIR}/validator-engine-console/validator-engine-console -k $
 CALL_FIFT="${TON_BUILD_DIR}/crypto/fift -I ${TON_SRC_DIR}/crypto/fift/lib:${TON_SRC_DIR}/crypto/smartcont"
 
 #=================================================
-MSIG_ADDR=`cat "${KEYS_DIR}/${VALIDATOR_NAME}.addr"`
-if [[ -z $MSIG_ADDR ]];then
-    echo "###-ERROR: Can't find validator account address!"
-    exit 1
-fi
+# MSIG_ADDR=`cat "${KEYS_DIR}/${VALIDATOR_NAME}.addr"`
+# if [[ -z $MSIG_ADDR ]];then
+#     echo "###-ERROR: Can't find validator account address!"
+#     exit 1
+# fi
 
 val_acc_addr=`echo "${MSIG_ADDR}" | cut -d ':' -f 2`
 workchain=`echo "${MSIG_ADDR}" | cut -d ':' -f 1`
@@ -143,7 +190,7 @@ fi
 ##############################################################################
 # Get SC current state to file ${ELECTIONS_WORK_DIR}/$val_acc_addr.tvc
 echo -n "Get SC state of acc: $MSIG_ADDR ... "    
-LC_OUTPUT="$(Get_SC_current_state)"
+LC_OUTPUT="$(Get_SC_current_state "$MSIG_ADDR")"
 result=`echo $LC_OUTPUT | grep "written StateInit of account"`
 if [[ -z  $result ]];then
     echo "###-ERROR: Cannot get account state. Can't continue. Sorry."
@@ -196,17 +243,17 @@ do
     Signed_Flag=false
     #======================================================================
     # prepare user signatures
-    msig_public=`cat ${KEYS_DIR}/msig${i}.keys.json | jq ".public" | tr -d '"'`
-    msig_secret=`cat ${KEYS_DIR}/msig${i}.keys.json | jq ".secret" | tr -d '"'`
+    msig_public=`cat ${KEYS_DIR}/${KeyFileName}${i}.keys.json | jq ".public" | tr -d '"'`
+    msig_secret=`cat ${KEYS_DIR}/${KeyFileName}${i}.keys.json | jq ".secret" | tr -d '"'`
 
     if [[ -z $msig_public ]] || [[ -z $msig_secret ]];then
         echo "###-ERROR: Can't find validator ${i} public and/or secret key!"
         exit 1
     fi
     
-    echo "${msig_secret}${msig_public}" > ${KEYS_DIR}/msig${i}.keys.txt
-    rm -f ${KEYS_DIR}/msig${i}.keys.bin
-    xxd -r -p ${KEYS_DIR}/msig${i}.keys.txt ${KEYS_DIR}/msig${i}.keys.bin
+    echo "${msig_secret}${msig_public}" > ${KEYS_DIR}/${KeyFileName}${i}.keys.txt
+    rm -f ${KEYS_DIR}/${KeyFileName}${i}.keys.bin
+    xxd -r -p ${KEYS_DIR}/${KeyFileName}${i}.keys.txt ${KEYS_DIR}/${KeyFileName}${i}.keys.bin
 
     #======================================================================
     # make boc for lite-client
@@ -214,7 +261,7 @@ do
         -a ${CONFIGS_DIR}/SafeMultisigWallet.abi.json \
         -m confirmTransaction \
         -p "{\"transactionId\":$Trans_ID}" \
-        -w $workchain --setkey ${KEYS_DIR}/msig${i}.keys.bin| tee ${ELECTIONS_WORK_DIR}/TVM_linker-${i}-signing.log)
+        -w $workchain --setkey ${KEYS_DIR}/${KeyFileName}${i}.keys.bin| tee ${ELECTIONS_WORK_DIR}/TVM_linker-${i}-signing.log)
 
     if [[ -z $(echo "$TVM_OUTPUT" | grep "boc file created") ]];then
         echo "###-ERROR: TVM linker CANNOT create boc file for ${i} signature!!! Can't continue. Exit."
@@ -245,7 +292,7 @@ do
         #======================================================================
         # Get SC current state to file ${ELECTIONS_WORK_DIR}/$val_acc_addr.tvc
         echo -n "Get SC state of acc: $MSIG_ADDR ... "    
-        LC_OUTPUT="$(Get_SC_current_state)"
+        LC_OUTPUT="$(Get_SC_current_state "$MSIG_ADDR")"
         result=`echo $LC_OUTPUT | grep "written StateInit of account"`
         if [[ -z  $result ]];then
             echo "###-ERROR: Cannot get account state. Can't continue. Sorry."
