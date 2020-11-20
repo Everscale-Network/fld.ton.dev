@@ -98,7 +98,7 @@ $CALL_LC -rc "sendfile ${KEYS_DIR}/${WALL_FILE}-msg-init-body.boc" -rc 'quit' &>
 LC_Result=`cat ${KEYS_DIR}/${WALL_FILE}-depl-result.log | grep "external message status is 1"`
 
 if [[ -z $LC_Result ]]; then
-    echo "###-ERROR: Send message for deploy FILED!!!"
+    echo "###-ERROR: Send message for deploy FAILED!!!"
     exit 1
 fi
 

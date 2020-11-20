@@ -190,7 +190,7 @@ if [ "$recover_amount" != "0" ]; then
 
     LC_OUTPUT=`cat ${ELECTIONS_WORK_DIR}/recovry-request.log | grep "external message status is 1"`
     if [[ -z $LC_OUTPUT ]]; then
-	    echo "###-ERROR: Send message for recovering FILED!!!"
+	    echo "###-ERROR: Send message for recovering FAILED!!!"
 	    echo "INFO: $(basename "$0") END $(date +%s) / $(date)"
 	    exit 1
     fi
@@ -307,7 +307,7 @@ elections_start_before=`echo $CONFIG_PAR_15 | awk '{print $5}'| awk -F ":" '{pri
 elections_end_before=`echo $CONFIG_PAR_15   | awk '{print $6}'| awk -F ":" '{print $2}'`
 stake_held_for=`echo $CONFIG_PAR_15         | awk '{print $7}'| awk -F ":" '{print $2}' | tr -d ')'`
 if [[ -z $validators_elected_for ]] || [[ -z $elections_start_before ]] || [[ -z $elections_end_before ]] || [[ -z $stake_held_for ]];then
-    echo "###-ERROR: Get network election params (p15) FILED!!!"
+    echo "###-ERROR: Get network election params (p15) FAILED!!!"
     exit 1
 fi
 #=================================================
@@ -319,7 +319,7 @@ if [[ -z $NewElectionKey ]];then
     NewElectionKey=`$CALL_VC -c "newkey" -c "quit" 2>/dev/null | tee "${ELECTIONS_WORK_DIR}/${VALIDATOR_NAME}-election-key" | grep "created new key" | awk '{print $4}'`
     trap - EXIT
     if [[ -z $NewElectionKey ]];then
-        echo "###-E RROR: Generate new election key FILED!!!"
+        echo "###-E RROR: Generate new election key FAILED!!!"
         exit 1
     fi
     echo "Elections key: $NewElectionKey" >> ${ELECTIONS_WORK_DIR}/$election_id
@@ -337,7 +337,7 @@ if [[ -z $New_ADNL_Key ]];then
     New_ADNL_Key=`$CALL_VC -c "newkey" -c "quit" 2>/dev/null | tee "${ELECTIONS_WORK_DIR}/${VALIDATOR_NAME}-election-adnl-key" | grep "created new key" | awk '{print $4}'`
     trap - EXIT
     if [[ -z $New_ADNL_Key ]];then
-        echo "###-ERROR: Generate new ADNL key FILED!!!"
+        echo "###-ERROR: Generate new ADNL key FAILED!!!"
         exit 1
     fi
     echo "ADNL key: $New_ADNL_Key" >> ${ELECTIONS_WORK_DIR}/$election_id
@@ -404,7 +404,7 @@ Public_Key=`echo "${VC_OUTPUT}" | grep "got public key" | awk '{print $4}'`
 Signature=`echo "${VC_OUTPUT}" | grep "got signature" | awk '{print $3}'`
 
 if [[ -z $Public_Key ]] || [[ -z $Signature ]];then
-    echo "###-ERROR: Signing  NewElectionKey FILED!!! Can't continue."
+    echo "###-ERROR: Signing  NewElectionKey FAILED!!! Can't continue."
     exit 1
 else
     echo "INFO: Public_Key: $Public_Key"
@@ -494,8 +494,8 @@ trap - EXIT
 vr_result=`cat ${ELECTIONS_WORK_DIR}/validator-req-result.log | grep "external message status is 1"`
 
 if [[ -z $vr_result ]]; then
-    echo "###-ERROR: Send message for eletction FILED!!!"
-    "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "###-ERROR: Send message for eletction FILED!!!" 2>&1 > /dev/null
+    echo "###-ERROR: Send message for eletction FAILED!!!"
+    "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "###-ERROR: Send message for eletction FAILED!!!" 2>&1 > /dev/null
     exit 1
 fi
 

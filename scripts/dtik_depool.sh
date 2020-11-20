@@ -112,7 +112,7 @@ while [[ $Attempts_to_send -gt 0 ]]; do
     vr_result=`cat ${ELECTIONS_WORK_DIR}/tik-req-result.log | grep "external message status is 1"`
 
     if [[ -z $vr_result ]]; then
-        echo "###-ERROR: Send message for Tik FILED!!!"
+        echo "###-ERROR: Send message for Tik FAILED!!!"
     fi
 
     echo "INFO: Tik-tok transaction to depool submitted!"
