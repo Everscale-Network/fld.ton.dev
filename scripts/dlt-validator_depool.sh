@@ -321,8 +321,8 @@ ADDR_FOUND=`echo "${LC_OUTPUT}"  | grep "$dec_proxy_addr" | awk '{print $3}'`
 if [[ ! -z $ADDR_FOUND ]];then
     echo
     echo "INFO: You participate already in this elections ($election_id)"
-    Your_Stake=`echo "${LC_OUTPUT}" | grep "$DP_Round_Proxy" | awk '{print $1 / 1000000000}'`
-    Your_ADNL=`echo "${LC_OUTPUT}"  | grep "$DP_Round_Proxy" | awk '{print $4}'`
+    Your_Stake=`echo "${LC_OUTPUT}" | grep "$dec_proxy_addr" | awk '{print $1 / 1000000000}'`
+    Your_ADNL=`echo "${LC_OUTPUT}"  | grep "$dec_proxy_addr" | awk '{print $4}'`
     echo "---INFO: Your stake: $Your_Stake with ADNL: $(echo "$Curr_ADNL_Key" | tr "[:upper:]" "[:lower:]")"
     echo
     exit 1

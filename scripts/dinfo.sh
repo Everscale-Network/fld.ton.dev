@@ -49,6 +49,7 @@ CALL_LC="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub 
 CALL_VC="${TON_BUILD_DIR}/validator-engine-console/validator-engine-console -k ${KEYS_DIR}/client -p ${KEYS_DIR}/server.pub -a 127.0.0.1:3030 -t 5"
 CALL_TL="$HOME/bin/tvm_linker"
 CALL_FT="${TON_BUILD_DIR}/crypto/fift -I ${TON_SRC_DIR}/crypto/fift/lib:${TON_SRC_DIR}/crypto/smartcont"
+
 OS_SYSTEM=`uname`
 if [[ "$OS_SYSTEM" == "Linux" ]];then
     CALL_BC="bc"
@@ -314,24 +315,24 @@ echo "Depool Owner/validator addr: $dp_val_wal"
 echo "Depool proxy #0:            $dp_proxy0"
 echo "Depool proxy #1:            $dp_proxy1"
 echo
-echo "================ Minimal Stakes for participant in the depool ================"
+echo "================ Finance information for the depool ==========================="
 
+PoolSelfMinBalance=$(echo "$Current_Depool_Info"|jq '.balanceThreshold'|tr -d '"')
 PoolMinStake=$(echo "$Current_Depool_Info"|jq '.minStake'|tr -d '"')
-PoolMinRoundStake=$(echo "$Current_Depool_Info"|jq '.minRoundStake'|tr -d '"')
-PoolValMinStake=$(echo "$Current_Depool_Info"|jq '.validatorAssurance'|tr -d '"')
-PoolValWalMinStake=$(echo "$Current_Depool_Info"|jq '.validatorWalletMinStake'|tr -d '"')
+validatorAssurance=$(echo "$Current_Depool_Info"|jq '.validatorAssurance'|tr -d '"')
+ValRewardFraction=$(echo "$Current_Depool_Info"|jq '.validatorRewardFraction'|tr -d '"')
+PoolValStakeFee=$(echo "$Current_Depool_Info"|jq '.stakeFee'|tr -d '"')
+PoolRetOrReinvFee=$(echo "$Current_Depool_Info"|jq '.retOrReinvFee'|tr -d '"')
 
-echo "                Pool Min Stake (Tk): $((PoolMinStake / 1000000000))"
-echo "  Pool Min Stake for one round (TK): $((PoolMinRoundStake / 1000000000))"
-echo "  Pool Min Stake for validator (TK): $((PoolValMinStake / 1000000000))"
-echo "Min Stake for validator wallet (TK): $((PoolValWalMinStake))"
+echo "                Pool Min Stake (Tk): $(echo "scale=3; $((PoolMinStake)) / 1000000000" | $CALL_BC)"
+echo "            Validator Comission (%): $((ValRewardFraction))"
+echo "              Depool stake fee (TK): $(echo "scale=3; $((PoolValStakeFee)) / 1000000000" | $CALL_BC)"
+echo " Depool return or reinvest fee (TK): $(echo "scale=3; $((PoolRetOrReinvFee)) / 1000000000" | $CALL_BC)"
+echo " Depool min balance to operate (TK): $(echo "scale=3; $((PoolSelfMinBalance)) / 1000000000" | $CALL_BC)"
+echo "           Validator Assurance (TK): $((validatorAssurance / 1000000000))"
 echo
-echo "============================ Depool fees ======================================"
-PoolInterest=$(echo "$Current_Depool_Info"|jq '.interest'|tr -d '"')
-
-
-echo "           Pool Last Round Interest (%): $(echo "scale=3; $((PoolInterest)) / 1000000000" | $CALL_BC)"
-
+##################################################################################################################
+echo "============================ Depool rounds info ==============================="
 
 Round_0_ID=$(echo "$Curr_Rounds_Info" | jq "[.rounds[]]|.[0].id"|tr -d '"'| xargs printf "%d\n")
 Round_1_ID=$(echo "$Curr_Rounds_Info" | jq "[.rounds[]]|.[1].id"|tr -d '"'| xargs printf "%d\n")
@@ -393,7 +394,7 @@ Prev_Round_Part_QTY=$(echo "$Curr_Rounds_Info" | jq "[.rounds[]]|.[$Prev_Round_N
 Curr_Round_Part_QTY=$(echo "$Curr_Rounds_Info" | jq "[.rounds[]]|.[$Curr_Round_Num].participantQty"|tr -d '"'| xargs printf "%d\n")
 Next_Round_Part_QTY=$(echo "$Curr_Rounds_Info" | jq "[.rounds[]]|.[$Next_Round_Num].participantQty"|tr -d '"'| xargs printf "%d\n")
 
-echo "===== Rounds participants QTY (prev/curr/next): $((Prev_Round_Part_QTY + 1)) / $((Curr_Round_Part_QTY + 1)) / $((Next_Round_Part_QTY + 1))"
+echo "===== Current Round participants QTY (prev/curr/next/lock): $((Prev_Round_Part_QTY + 1)) / $((Curr_Round_Part_QTY + 1)) / $((Next_Round_Part_QTY + 1))"
 # "outputs": [
 # 				{"name":"total","type":"uint64"},
 # 				{"name":"withdrawValue","type":"uint64"},
@@ -403,32 +404,62 @@ echo "===== Rounds participants QTY (prev/curr/next): $((Prev_Round_Part_QTY + 1
 # 				{"components":[{"name":"isActive","type":"bool"},{"name":"amount","type":"uint64"},{"name":"lastWithdrawalTime","type":"uint64"},{"name":"withdrawalPeriod","type":"uint32"},{"name":"withdrawalValue","type":"uint64"},{"name":"owner","type":"address"}],"name":"vestings","type":"map(uint64,tuple)"},
 # 				{"components":[{"name":"isActive","type":"bool"},{"name":"amount","type":"uint64"},{"name":"lastWithdrawalTime","type":"uint64"},{"name":"withdrawalPeriod","type":"uint32"},{"name":"withdrawalValue","type":"uint64"},{"name":"owner","type":"address"}],"name":"locks","type":"map(uint64,tuple)"}
 
-Hex_Curr_Round_ID=$(echo "0x$(printf '%x\n' $Curr_Round_ID)")
 Hex_Prev_Round_ID=$(echo "0x$(printf '%x\n' $Prev_Round_ID)")
+Hex_Curr_Round_ID=$(echo "0x$(printf '%x\n' $Curr_Round_ID)")
+Hex_Next_Round_ID=$(echo "0x$(printf '%x\n' $Next_Round_ID)")
 
 CRP_QTY=$((Curr_Round_Part_QTY - 1))
 for (( i=0; i <= $CRP_QTY; i++ ))
 do
     Curr_Part_Addr=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipants -p "{}" --decode-c6 $dpc_addr | grep 'participants' | jq ".participants|.[$i]")
-    Curr_Ord_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".stakes.\"$Hex_Curr_Round_ID\""|tr -d '"')
     Prev_Ord_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".stakes.\"$Hex_Prev_Round_ID\""|tr -d '"')
+    Curr_Ord_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".stakes.\"$Hex_Curr_Round_ID\""|tr -d '"')
+    Next_Ord_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".stakes.\"$Hex_Next_Round_ID\""|tr -d '"')
     Reward=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".reward"|tr -d '"')
     Curr_Lck_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".amount" |tr -d '"')
+    Lck_Start_Time=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".lastWithdrawalTime" |tr -d '"')
+    Lck_Held_For=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".withdrawalPeriod" |tr -d '"')
+    Lck_Out_DateTime="$(echo $((Lck_Start_Time + Lck_Held_For)) | gawk '{print strftime("%Y-%m-%d %H:%M:%S", $1)}')"
+    LockInfo=""
+    if [[ $Curr_Lck_Stake -ne 0 ]];then
+        LockInfo="Lock: $((Curr_Lck_Stake / 1000000000)) will out: $Lck_Out_DateTime"
+    fi
 
-    echo "$(printf '%4d' $(($i + 1))) $Curr_Part_Addr Reward: $((Reward / 1000000000)) ;  Stakes: $((Prev_Ord_Stake / 1000000000)) / $((Curr_Ord_Stake / 1000000000)) ; Lock: $((Curr_Lck_Stake / 1000000000))"
+    echo "$(printf '%4d' $(($i + 1))) $Curr_Part_Addr Reward: $((Reward / 1000000000)) ;  \
+Stakes: $((Prev_Ord_Stake / 1000000000)) / $((Curr_Ord_Stake / 1000000000)) / $((Next_Ord_Stake / 1000000000)) ; \
+$LockInfo"
+
 done
 
-
-PoolPartsFrac=$(echo "$Current_Depool_Info"|jq '.participantFraction'|tr -d '"')
-PoolValFrac=$(echo "$Current_Depool_Info"|jq '.validatorFraction'|tr -d '"')
-
 echo
-echo "=========================================================================================="
-echo "Pool participants fraction: $((PoolValWalMinStake))"
-echo "   Pool validator fraction: $((PoolValFrac))"
+echo "===== Total Depool participants (prev/curr/next/lock) =============================="
+
+CRP_QTY=$((Num_of_participants - 1))
+for (( i=0; i <= $CRP_QTY; i++ ))
+do
+    Curr_Part_Addr=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipants -p "{}" --decode-c6 $dpc_addr | grep 'participants' | jq ".participants|.[$i]")
+    Prev_Ord_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".stakes.\"$Hex_Prev_Round_ID\""|tr -d '"')
+    Curr_Ord_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".stakes.\"$Hex_Curr_Round_ID\""|tr -d '"')
+    Next_Ord_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".stakes.\"$Hex_Next_Round_ID\""|tr -d '"')
+    Reward=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".reward"|tr -d '"')
+    Curr_Lck_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".amount" |tr -d '"')
+    Lck_Start_Time=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".lastWithdrawalTime" |tr -d '"')
+    Lck_Held_For=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".withdrawalPeriod" |tr -d '"')
+    Lck_Out_DateTime="$(echo $((Lck_Start_Time + Lck_Held_For)) | gawk '{print strftime("%Y-%m-%d %H:%M:%S", $1)}')"
+    LockInfo=""
+    if [[ $Curr_Lck_Stake -ne 0 ]];then
+        LockInfo="Lock: $((Curr_Lck_Stake / 1000000000)) will out: $Lck_Out_DateTime"
+    fi
+
+    echo "$(printf '%4d' $(($i + 1))) $Curr_Part_Addr Reward: $((Reward / 1000000000)) ;  \
+Stakes: $((Prev_Ord_Stake / 1000000000)) / $((Curr_Ord_Stake / 1000000000)) / $((Next_Ord_Stake / 1000000000)) ; \
+$LockInfo"
+
+done
+
 echo
 echo "INFO: $(basename "$0") FINISHED $(date +%s) / $(date)"
-echo "=========================================================================================="
+echo "============================================================================================"
 
 trap - EXIT
 exit 0
