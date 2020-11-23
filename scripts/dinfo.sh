@@ -219,7 +219,7 @@ echo
 echo "==================== Elections Info ====================================="
 
 election_id=`$CALL_LC -rc "runmethod $elector_addr active_election_id" -rc "quit" 2>/dev/null | grep "result:" | awk '{print $3}'`
-echo "   => Elector Election ID: $election_id / $(echo "$election_id" | gawk '{print strftime("%Y-%m-%d %H:%M:%S", $1)}')"
+echo "   => Elector Elections ID: $election_id / $(echo "$election_id" | gawk '{print strftime("%Y-%m-%d %H:%M:%S", $1)}')"
 echo 
 
 Node_Keys=`$CALL_VC -c "getvalidators" -c "quit" 2>/dev/null | grep "validator0"`
