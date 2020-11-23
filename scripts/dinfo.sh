@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C) Sergey Tyurin  2020-11-16 19:00:00
+# (C) Sergey Tyurin  2020-11-23 22:00:00
 
 # You have to have installed :
 #   'xxd' - is a part of vim-commons ( [apt/dnf/pkg] install vim[-common] )
@@ -162,6 +162,15 @@ function getnxt() {
   fi;
   echo $3;
 }
+#=================================================
+# Get account balance
+function get_acc_bal() {
+    local ACCOUNT=$1
+    local ACCOUNT_INFO=`$CALL_LC -rc "getaccount ${ACCOUNT}" -rc "quit" 2>/dev/null`
+    local AMOUNT=`echo "$ACCOUNT_INFO" |grep "account balance" | tr -d "ng"|awk '{print $4}'`
+    echo $AMOUNT
+}
+
 ##############################################################################
 # Load addresses and set variables
 Inp_Depool_addr=$1
@@ -303,26 +312,35 @@ fi
 echo
 echo "==================== Depool addresses ====================================="
 
-dp_val_wal=$(echo "$Current_Depool_Info" | jq ".validatorWallet")
+dp_val_wal=$(echo "$Current_Depool_Info" | jq ".validatorWallet"|tr -d '"')
 dp_proxy0=$(echo "$Current_Depool_Info" | jq "[.proxies[]]|.[0]"|tr -d '"')
 dp_proxy1=$(echo "$Current_Depool_Info" | jq "[.proxies[]]|.[1]"|tr -d '"')
 
 [[ ! -f ${KEYS_DIR}/proxy0.addr ]] && echo "$dp_proxy0" > ${KEYS_DIR}/proxy0.addr
 [[ ! -f ${KEYS_DIR}/proxy1.addr ]] && echo "$dp_proxy1" > ${KEYS_DIR}/proxy1.addr
 
-echo "Depool contract address:     \"$Depool_addr\""
-echo "Depool Owner/validator addr: $dp_val_wal"
-echo "Depool proxy #0:            $dp_proxy0"
-echo "Depool proxy #1:            $dp_proxy1"
-echo
-echo "================ Finance information for the depool ==========================="
+#============================================
+# Get balances
+Depool_Bal=$(get_acc_bal "$Depool_addr")
+Val_Bal=$(get_acc_bal "$dp_val_wal")
+prx0_Bal=$(get_acc_bal "$dp_proxy0")
+prx1_Bal=$(get_acc_bal "$dp_proxy1")
 
+#============================================
+# Get depool fininfo
 PoolSelfMinBalance=$(echo "$Current_Depool_Info"|jq '.balanceThreshold'|tr -d '"')
 PoolMinStake=$(echo "$Current_Depool_Info"|jq '.minStake'|tr -d '"')
 validatorAssurance=$(echo "$Current_Depool_Info"|jq '.validatorAssurance'|tr -d '"')
 ValRewardFraction=$(echo "$Current_Depool_Info"|jq '.validatorRewardFraction'|tr -d '"')
 PoolValStakeFee=$(echo "$Current_Depool_Info"|jq '.stakeFee'|tr -d '"')
 PoolRetOrReinvFee=$(echo "$Current_Depool_Info"|jq '.retOrReinvFee'|tr -d '"')
+
+echo "Depool contract address:     $Depool_addr  Balance: $(echo "scale=2; $((Depool_Bal)) / 1000000000" | $CALL_BC)"
+echo "Depool Owner/validator addr: $dp_val_wal  Balance: $(echo "scale=2; $((Val_Bal)) / 1000000000" | $CALL_BC)"
+echo "Depool proxy #0:            $dp_proxy0  Balance: $(echo "scale=2; $((prx0_Bal)) / 1000000000" | $CALL_BC)"
+echo "Depool proxy #1:            $dp_proxy1  Balance: $(echo "scale=2; $((prx1_Bal)) / 1000000000" | $CALL_BC)"
+echo
+echo "================ Finance information for the depool ==========================="
 
 echo "                Pool Min Stake (Tk): $(echo "scale=3; $((PoolMinStake)) / 1000000000" | $CALL_BC)"
 echo "            Validator Comission (%): $((ValRewardFraction))"
