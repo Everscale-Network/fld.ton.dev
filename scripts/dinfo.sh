@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C) Sergey Tyurin  2020-11-23 22:00:00
+# (C) Sergey Tyurin  2020-11-24 09:00:00
 
 # You have to have installed :
 #   'xxd' - is a part of vim-commons ( [apt/dnf/pkg] install vim[-common] )
@@ -178,7 +178,7 @@ Depool_addr=`cat ${KEYS_DIR}/depool.addr`
 Depool_addr=${Inp_Depool_addr:=$Depool_addr}
 
 dpc_addr=`echo $Depool_addr | cut -d ':' -f 2`
-[[ -f  ${KEYS_DIR}/helper.addr ]] && Helper_addr=`cat ${KEYS_DIR}/helper.addr`
+[[ -f ${KEYS_DIR}/Tik.addr ]] && Tik_addr=`cat ${KEYS_DIR}/Tik.addr`
 [[ -f ${KEYS_DIR}/proxy0.addr ]] && Proxy0_addr=`cat ${KEYS_DIR}/proxy0.addr`
 [[ -f ${KEYS_DIR}/proxy1.addr ]] && Proxy1_addr=`cat ${KEYS_DIR}/proxy1.addr`
 Validator_addr=`cat ${KEYS_DIR}/${VALIDATOR_NAME}.addr`
@@ -325,6 +325,7 @@ Depool_Bal=$(get_acc_bal "$Depool_addr")
 Val_Bal=$(get_acc_bal "$dp_val_wal")
 prx0_Bal=$(get_acc_bal "$dp_proxy0")
 prx1_Bal=$(get_acc_bal "$dp_proxy1")
+[[ ! -z $Tik_addr ]] && Tik_Bal=$(get_acc_bal "$Tik_addr")
 
 #============================================
 # Get depool fininfo
@@ -339,6 +340,8 @@ echo "Depool contract address:     $Depool_addr  Balance: $(echo "scale=2; $((De
 echo "Depool Owner/validator addr: $dp_val_wal  Balance: $(echo "scale=2; $((Val_Bal)) / 1000000000" | $CALL_BC)"
 echo "Depool proxy #0:            $dp_proxy0  Balance: $(echo "scale=2; $((prx0_Bal)) / 1000000000" | $CALL_BC)"
 echo "Depool proxy #1:            $dp_proxy1  Balance: $(echo "scale=2; $((prx1_Bal)) / 1000000000" | $CALL_BC)"
+[[ ! -z $Tik_addr ]] && \
+echo "Tik account:                 $Tik_addr  Balance: $(echo "scale=2; $((Tik_Bal)) / 1000000000" | $CALL_BC)"
 echo
 echo "================ Finance information for the depool ==========================="
 
