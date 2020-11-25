@@ -62,7 +62,11 @@ $TON_LOG_DIR/node.log {
 }
 _ENDNLR_
 )
-sudo echo $NODE_LOG_ROT > /etc/logrotate.d/tonnode
+if [[ "$OS_SYSTEM" == "Linux" ]];then
+    sudo echo $NODE_LOG_ROT > /etc/logrotate.d/tonnode
+else
+    sudo echo $NODE_LOG_ROT > /usr/local/etc/logrotate.d/tonnode
+fi
 
 #============================================
 # set global config according to NETWORK_TYPE
