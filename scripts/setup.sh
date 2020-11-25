@@ -6,8 +6,23 @@ SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 
 echo "INFO: setup TON node..."
 
-SETUP_USER="$(id -u)"
-SETUP_GROUP="$(id -g)"
+if [[ -z $TON_LOG_DIR ]];then
+    echo "###-ERROR: 'TON_LOG_DIR' variable cannot be empty!"
+    exit 1
+fi
+if [[ -z $TON_WORK_DIR ]];then
+    echo "###-ERROR: 'TON_WORK_DIR' variable cannot be empty!"
+    exit 1
+fi
+
+OS_SYSTEM=`uname`
+if [[ "$OS_SYSTEM" == "Linux" ]];then
+    SETUP_USER="$(id -u)"
+    SETUP_GROUP="$(id -g)"
+else
+    SETUP_USER="$(id -un)"
+    SETUP_GROUP="$(id -gn)"
+fi
 
 echo "INFO: Getting my public IP..."
 until [ "$(echo "${MY_ADDR}" | grep "\." -o | wc -l)" -eq 3 ] ; do
@@ -17,6 +32,8 @@ until [ "$(echo "${MY_ADDR}" | grep "\." -o | wc -l)" -eq 3 ] ; do
 done
 echo "INFO: MY_ADDR = ${MY_ADDR}"
 
+#============================================
+# we can't delete TON_WORK_DIR if it has been mounted on separate disk
 sudo rm -rf "${TON_WORK_DIR}/db"
 
 sudo mkdir -p "${TON_WORK_DIR}"
@@ -24,10 +41,35 @@ sudo chown "${SETUP_USER}:${SETUP_GROUP}" "${TON_WORK_DIR}"
 mkdir -p "${TON_WORK_DIR}/etc"
 mkdir -p "${TON_WORK_DIR}/db"
 
-curl -o ${CONFIGS_DIR}/${NETWORK_TYPE}/ton-global.config.json https://raw.githubusercontent.com/FreeTON-Network/fld.ton.dev/main/configs/${NETWORK_TYPE}/ton-global.config.json
+mkdir -p $TON_LOG_DIR
 
+#============================================
+# set log rotate
+# NB! - should be >> in run.sh
+NODE_LOG_ROT=$(cat <<-_ENDNLR_
+$TON_LOG_DIR/node.log {
+    daily
+    copytruncate
+    dateext
+    dateyesterday
+    missingok
+    rotate 14
+    maxage 30
+    compress
+    delaycompress
+    notifempty
+    sharedscripts
+}
+_ENDNLR_
+)
+sudo echo $NODE_LOG_ROT > /etc/logrotate.d/tonnode
+
+#============================================
+# set global config according to NETWORK_TYPE
+curl -o ${CONFIGS_DIR}/${NETWORK_TYPE}/ton-global.config.json https://raw.githubusercontent.com/FreeTON-Network/fld.ton.dev/main/configs/${NETWORK_TYPE}/ton-global.config.json
 cp -f "${CONFIGS_DIR}/${NETWORK_TYPE}/ton-global.config.json" "${TON_WORK_DIR}/etc/ton-global.config.json"
 
+#===========================================
 echo "INFO: generate initial ${TON_WORK_DIR}/db/config.json..."
 "${TON_BUILD_DIR}/validator-engine/validator-engine" -C "${TON_WORK_DIR}/etc/ton-global.config.json" --db "${TON_WORK_DIR}/db" --ip "${MY_ADDR}"
 

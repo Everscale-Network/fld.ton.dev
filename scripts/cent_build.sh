@@ -32,7 +32,7 @@ if [ "${INSTALL_DEPENDENCIES}" = "yes" ]; then
     sudo dnf -y group list ids 
     sudo dnf -y group install "Development Tools"
     sudo dnf -y install cargo
-    sudo dnf -y install curl jq wget bc vim
+    sudo dnf -y install curl jq wget bc vim logrotate
     sudo dnf -y --enablerepo=PowerTools install gperf
     sudo dnf -y install snappy 
     sudo dnf -y --enablerepo=PowerTools install snappy-devel

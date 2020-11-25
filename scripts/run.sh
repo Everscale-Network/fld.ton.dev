@@ -17,11 +17,11 @@ fi
 USE_THREADS=$((V_CPU - 2))
 
 echo
-echo "${TON_BUILD_DIR}/validator-engine/validator-engine -v $verb -t $USE_THREADS ${ENGINE_ADDITIONAL_PARAMS} -C ${TON_WORK_DIR}/etc/ton-global.config.json --db ${TON_WORK_DIR}/db > ${TON_WORK_DIR}/node.log"
+echo "${TON_BUILD_DIR}/validator-engine/validator-engine -v $verb -t $USE_THREADS ${ENGINE_ADDITIONAL_PARAMS} -C ${TON_WORK_DIR}/etc/ton-global.config.json --db ${TON_WORK_DIR}/db >> ${TON_WORK_DIR}/node.log"
 echo
 
 "${TON_BUILD_DIR}/validator-engine/validator-engine" -v "$verb" -t "$USE_THREADS" ${ENGINE_ADDITIONAL_PARAMS} \
-    -C "${TON_WORK_DIR}/etc/ton-global.config.json" --db "${TON_WORK_DIR}/db" > "${TON_WORK_DIR}/node.log" 2>&1 &
+    -C "${TON_WORK_DIR}/etc/ton-global.config.json" --db "${TON_WORK_DIR}/db" >> "${TON_WORK_DIR}/node.log" 2>&1 &
 
 sleep 2
 VAL_PID=`ps -ax | grep "validator\-engine" | awk '{print $1}'`
