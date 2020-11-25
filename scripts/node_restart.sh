@@ -6,6 +6,10 @@ SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 
 verb="${1:-1}"
 
+echo "Update networks global configs ..."
+$SCRIPT_DIR/nets_config_update.sh
+echo
+
 VAL_PID=`ps -ax | grep "validator\-engine" | awk '{print $1}'`
 echo "Engine PID: $VAL_PID"
 
