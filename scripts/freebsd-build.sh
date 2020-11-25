@@ -42,7 +42,6 @@ if [ "${INSTALL_DEPENDENCIES}" = "yes" ]; then
 	gawk \
 	base64 \
 	gflags \
-	libmicrohttpd \
 	ccache \
         cmake \
         curl \
@@ -54,7 +53,19 @@ if [ "${INSTALL_DEPENDENCIES}" = "yes" ]; then
 	vim \
     logrotate \
 	gsl
+#================================================
+#	libmicrohttpd \ 
+#   does not build with libmicrohttpd-0.9.71
+# build & install libmicrohttpd-0.9.70
 
+mkdir -p $HOME/src
+cd $HOME/src
+fetch https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.70.tar.gz
+tar xf libmicrohttpd-0.9.70.tar.gz
+cd libmicrohttpd-0.9.70
+./configure && make && sudo make install
+
+#================================================
     curl https://sh.rustup.rs -sSf | sh -s -- -y
     #shellcheck source=$HOME/.cargo/env
     . "$HOME/.cargo/env"
