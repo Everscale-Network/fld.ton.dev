@@ -20,8 +20,8 @@ NumOfNodes=$(cat $GLB_CONF_FILE | jq '.dht.static_nodes.nodes|length')
 echo "============================================================================================="
 for (( i=0; i < $NumOfNodes; i++ ))
 do
-    CurrNodDecIP=$(cat $GLB_CONF_FILE | jq ".dht.static_nodes.nodes|.[$i].addr_list.addrs[0].ip")
-    CurrNodePort=$(cat $GLB_CONF_FILE | jq ".dht.static_nodes.nodes|.[$i].addr_list.addrs[0].port")
+    CurrNodDecIP=$(cat $GLB_CONF_FILE | jq ".dht.static_nodes.nodes[$i].addr_list.addrs[0].ip")
+    CurrNodePort=$(cat $GLB_CONF_FILE | jq ".dht.static_nodes.nodes[$i].addr_list.addrs[0].port")
     #echo "Dec IP of 1: $DecIP"
 
     CurNodeIP=$(dec2ip "$CurrNodDecIP")
