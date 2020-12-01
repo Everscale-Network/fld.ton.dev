@@ -50,4 +50,4 @@ export CALL_VC="$HOME/bin/validator-engine-console -k ${KEYS_DIR}/client -p ${KE
 export CALL_VE="$HOME/bin/validator-engine"
 export CALL_TL="$HOME/bin/tvm_linker"
 export CALL_TC="$HOME/bin/tonos-cli"
-export CALL_FT="${TON_BUILD_DIR}/crypto/fift -I ${FIFT_LIB}:${FSCs_DIR}"
+export CALL_FIFT="${TON_BUILD_DIR}/crypto/fift -I ${FIFT_LIB}:${FSCs_DIR}"
