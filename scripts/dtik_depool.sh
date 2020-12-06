@@ -49,6 +49,28 @@ echo
 echo "#################################### Tik depool script ########################################"
 echo "INFO: $(basename "$0") BEGIN $(date +%s) / $(date)"
 
+##############################################################################
+# Test binaries
+if [[ -z $($CALL_LC --help |grep 'Lite Client') ]];then
+    echo "###-ERROR(line $LINENO): Lite Client not installed in PATH"
+    exit 1
+fi
+
+if [[ -z $($CALL_TL -V | grep "TVM linker") ]];then
+    echo "###-ERROR(line $LINENO): TVM linker not installed in PATH"
+    exit 1
+fi
+
+if [[ -z $(xxd -v 2>&1 | grep "Juergen Weigert") ]];then
+    echo "###-ERROR(line $LINENO): 'xxd' not installed in PATH"
+    exit 1
+fi
+
+if [[ -z $(jq --help 2>/dev/null |grep -i "Usage"|cut -d ":" -f 1) ]];then
+    echo "###-ERROR(line $LINENO): 'jq' not installed in PATH"
+    exit 1
+fi
+
 #=================================================
 # Get Smart Contract current state by dowloading it & save to file
 function Get_SC_current_state() { 
@@ -233,7 +255,6 @@ if [[ ! -z $elections_id ]];then
         "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server: Depool Tik:" \
             "ALARM!!! Current elections ID from elector $elections_id ($(TD_unix2human $elections_id)) is not equal elections ID from Depool: $Curr_DP_Elec_ID ($(TD_unix2human $Curr_DP_Elec_ID))" 2>&1 > /dev/null
     fi
-
 
     #=================================================
 fi 
