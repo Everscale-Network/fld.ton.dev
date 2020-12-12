@@ -170,9 +170,19 @@ fi
 echo -e "$CurrNetInfo"
 echo
 
-Inp_Depool_addr=$1
-Depool_addr=`cat ${KEYS_DIR}/depool.addr`
-Depool_addr=${Inp_Depool_addr:=$Depool_addr}
+Depool_addr=$1
+if [[ -z $Inp_Depool ]];then
+    MyDepool_addr=`cat "${KEYS_DIR}/depool.addr"`
+    if [[ -z $MyDepool_addr ]];then
+        echo " Can't find ${KEYS_DIR}/depool.addr"
+        exit 1
+    else
+        Depool_addr=$MyDepool_addr
+    fi
+else
+    acc_fmt="$(echo "$Depool_addr" |  awk -F ':' '{print $2}')"
+    [[ -z $acc_fmt ]] && Depool_addr=`cat "${KEYS_DIR}/${Depool_addr}.addr"`
+fi
 
 dpc_addr=`echo $Depool_addr | cut -d ':' -f 2`
 [[ -f ${KEYS_DIR}/Tik.addr ]] && Tik_addr=`cat ${KEYS_DIR}/Tik.addr`
