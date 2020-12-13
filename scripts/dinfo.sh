@@ -171,7 +171,7 @@ echo -e "$CurrNetInfo"
 echo
 
 Depool_addr=$1
-if [[ -z $Inp_Depool ]];then
+if [[ -z $Depool_addr ]];then
     MyDepool_addr=`cat "${KEYS_DIR}/depool.addr"`
     if [[ -z $MyDepool_addr ]];then
         echo " Can't find ${KEYS_DIR}/depool.addr"
