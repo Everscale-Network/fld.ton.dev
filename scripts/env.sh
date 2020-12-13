@@ -40,7 +40,7 @@ export VAL_ENGINE_CONSOLE_PORT="3030"
 export ENGINE_ADDITIONAL_PARAMS=""
 
 export SafeSCs_DIR=$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/safemultisig
-export SetSCs_DIR=$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/safemultisig
+export SetSCs_DIR=$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/setcodemultisig
 export DSCs_DIR=$NET_TON_DEV_SRC_TOP_DIR/ton-labs-contracts/solidity/depool
 export CRYPTO_DIR=$TON_SRC_DIR/crypto
 export FSCs_DIR=$CRYPTO_DIR/smartcont
