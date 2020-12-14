@@ -471,7 +471,10 @@ do
         Wtdr_Val_Info="; Next round withdraw: $(echo "scale=3; $((Wtdr_Val_hex)) / 1000000000" | $CALL_BC)"
     fi
 
-    Curr_Lck_Stake=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".amount" |tr -d '"')
+    Curr_Lck_Stake=$(($($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".amount" |tr -d '"')))
+    if [[ $Curr_Lck_Stake -eq 0 ]];then
+        Curr_Lck_Stake=$(($($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".remainingAmount" |tr -d '"')))
+    fi
     Lck_Start_Time=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".lastWithdrawalTime" |tr -d '"')
     Lck_Held_For=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".withdrawalPeriod" |tr -d '"')
     Lck_Out_DateTime="$(echo $((Lck_Start_Time + Lck_Held_For)) | gawk '{print strftime("%Y-%m-%d %H:%M:%S", $1)}')"
@@ -520,6 +523,10 @@ do
         Wtdr_Val_Info="; Next round withdraw: $(echo "scale=3; $((Wtdr_Val_hex)) / 1000000000" | $CALL_BC)"
     fi
 
+    Curr_Lck_Stake=$(($($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".amount" |tr -d '"')))
+    if [[ $Curr_Lck_Stake -eq 0 ]];then
+        Curr_Lck_Stake=$(($($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".remainingAmount" |tr -d '"')))
+    fi
     Lck_Start_Time=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".lastWithdrawalTime" |tr -d '"')
     Lck_Held_For=$($CALL_TL test -a ${DSCs_DIR}/DePool.abi.json -m getParticipantInfo -p "{\"addr\":$Curr_Part_Addr}" --decode-c6 $dpc_addr|grep -i 'withdrawValue' | jq ".locks.\"$Hex_Curr_Round_ID\".withdrawalPeriod" |tr -d '"')
     Lck_Out_DateTime="$(echo $((Lck_Start_Time + Lck_Held_For)) | gawk '{print strftime("%Y-%m-%d %H:%M:%S", $1)}')"
