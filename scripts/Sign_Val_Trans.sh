@@ -105,8 +105,7 @@ function Get_SC_current_state() {
     trap - EXIT
     local result=`echo $LC_OUTPUT | grep "written StateInit of account"`
     if [[ -z  $result ]];then
-        echo "###-ERROR(line $LINENO):
- Cannot get account state. Can't continue. Sorry."
+        echo "###-ERROR(line $LINENO): Cannot get account state. Can't continue. Sorry."
         exit 1
     fi
     echo "$LC_OUTPUT"
