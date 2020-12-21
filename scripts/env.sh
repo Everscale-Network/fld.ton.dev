@@ -3,7 +3,8 @@
 export NETWORK_TYPE="fld.ton.dev"
 export MAIN_NET_ID="58FFCA1A178DAFF7"
 export DEV_NET_ID="3540FA79BD97390D"
-export FLD_NET_ID="101FED41A989FE77"
+export FLD_NET_ID="753C836CD0EF50C0"
+# Prev zerostate: "101FED41A989FE77" - dead 21-12-2020
 
 export MASTER_NODE="fld01"
 export NODE_IP_ADDR="$(curl -sS ipv4bot.whatismyipaddress.com)"
