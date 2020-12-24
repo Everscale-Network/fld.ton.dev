@@ -6,7 +6,7 @@ export DEV_NET_ID="3540FA79BD97390D"
 export FLD_NET_ID="753C836CD0EF50C0"
 # Prev zerostate: "101FED41A989FE77" - dead 21-12-2020
 
-export MASTER_NODE="fld01"
+export MASTER_NODE="fld0"
 export NODE_IP_ADDR="$(curl -sS ipv4bot.whatismyipaddress.com)"
 export ADNL_PORT="30310"
 export NODE_ADDRESS="${NODE_IP_ADDR}:${ADNL_PORT}"
