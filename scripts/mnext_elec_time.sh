@@ -34,6 +34,7 @@ echo
 echo "################################# Set timetable for msig #####################################"
 echo "INFO: $(basename "$0") BEGIN $(date +%s) / $(date)"
 
+DELAY_TIME=0        # Delay time from the start of elections
 TIME_SHIFT=120
 SCRPT_USER=$USER
 
@@ -114,7 +115,7 @@ END_OF_ELECTIONS_TIME=$((election_id - EEND_BEFORE))
 END_OF_ELECTIONS=$(GET_M_H "$END_OF_ELECTIONS_TIME")
 #===================================================
 # for new script it need to run msig script twice
-CRR_ELECTION_TIME=$((CURR_VAL_UNTIL - STRT_BEFORE + TIME_SHIFT))
+CRR_ELECTION_TIME=$((CURR_VAL_UNTIL - STRT_BEFORE + TIME_SHIFT + DELAY_TIME))
 CRR_ELECTION_SECOND_TIME=$(($CRR_ELECTION_TIME + $TIME_SHIFT))
 CRR_ADNL_TIME=$(($CRR_ELECTION_SECOND_TIME + $TIME_SHIFT))
 CRR_BAL_TIME=$(($CRR_ADNL_TIME + $TIME_SHIFT))
@@ -128,7 +129,7 @@ CUR_ELECT_5=$(GET_M_H "$CRR_CHG_TIME")
 
 #===================================================
 # for new script it need to run msig script twice
-NEXT_ELECTION_TIME=$((CURR_VAL_UNTIL + VAL_DUR - STRT_BEFORE + $TIME_SHIFT))
+NEXT_ELECTION_TIME=$((CURR_VAL_UNTIL + VAL_DUR - STRT_BEFORE + $TIME_SHIFT + DELAY_TIME))
 NEXT_ELECTION_SECOND_TIME=$(($NEXT_ELECTION_TIME + $TIME_SHIFT))
 NEXT_ADNL_TIME=$(($NEXT_ELECTION_SECOND_TIME + $TIME_SHIFT))
 NEXT_BAL_TIME=$(($NEXT_ADNL_TIME + $TIME_SHIFT))
