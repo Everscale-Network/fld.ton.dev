@@ -157,7 +157,7 @@ $NXT_ELECT_1 * * *    cd ${SCRIPT_DIR} && ./dtik_depool.sh >> ${TON_LOG_DIR}/val
 $NXT_ELECT_2 * * *    cd ${SCRIPT_DIR} && ./dlt-validator_depool.sh >> ${TON_LOG_DIR}/validator_msig.log
 $NXT_ELECT_3 * * *    cd ${SCRIPT_DIR} && ./Sign_Val_Trans.sh >> ${TON_LOG_DIR}/validator_msig.log
 $NXT_ELECT_4 * * *    cd ${SCRIPT_DIR} && ./dnext_elec_time.sh >> ${TON_LOG_DIR}/validator_msig.log && ./participant_list.sh >> ${TON_LOG_DIR}/validator_msig.log
-$GPL_TIME_MH * * *    cd ${SCRIPT_DIR} && ./get_participant_list.sh > ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst && chmod 444 ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst
+$GPL_TIME_MH * * *    cd ${SCRIPT_DIR} && ./get_participant_list.sh > ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst && chmod 444 ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst && ./rotate_nodelog.sh
 _ENDCRN_
 )
 

@@ -185,7 +185,7 @@ $NXT_ELECT_1 * * *    cd ${SCRIPT_DIR} && ./lt-validator_msig.sh 1 >> ${TON_LOG_
 $NXT_ELECT_2 * * *    cd ${SCRIPT_DIR} && ./mnext_elec_time.sh >> /var/ton-work/validator_msig.log && ./balance_check.sh >> ${TON_LOG_DIR}/validator_msig.log
 $CUR_ELECT_3 * * *    cd ${SCRIPT_DIR} && ./lt-validator_msig.sh $STAKE_AMNT >> ${TON_LOG_DIR}/validator_msig.log
 $CUR_ELECT_4 * * *    cd ${SCRIPT_DIR} && ./participant_list.sh >> ${TON_LOG_DIR}/validator_msig.log && ./balance_check.sh >> ${TON_LOG_DIR}/validator_msig.log
-$END_OF_ELECTIONS * * *    cd ${SCRIPT_DIR} && ./get_participant_list.sh > $END_OF_ELECTIONS/${election_id}_parts.lst && chmod 444 $END_OF_ELECTIONS/${election_id}_parts.lst
+$END_OF_ELECTIONS * * *    cd ${SCRIPT_DIR} && ./get_participant_list.sh > $END_OF_ELECTIONS/${election_id}_parts.lst && chmod 444 $END_OF_ELECTIONS/${election_id}_parts.lst && ./rotate_nodelog.sh
 _ENDCRN_
 )
 
