@@ -41,7 +41,7 @@ SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 
 ###################
 TIMEDIFF_MAX=100
-SLEEP_TIMEOUT=10
+SLEEP_TIMEOUT=15
 SEND_ATTEMPTS=10
 ###################
 
