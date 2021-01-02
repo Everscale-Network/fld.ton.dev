@@ -22,6 +22,8 @@ export TON_BUILD_DIR="${TON_SRC_DIR}/build"
 export TONOS_CLI_SRC_DIR="${NET_TON_DEV_SRC_TOP_DIR}/tonos-cli"
 export UTILS_DIR="${TON_BUILD_DIR}/utils"
 
+export RNODE_SRC_DIR="${NET_TON_DEV_SRC_TOP_DIR}/rnode"
+
 #WRK_DIR=/dev/shm
 WRK_DIR=/var
 

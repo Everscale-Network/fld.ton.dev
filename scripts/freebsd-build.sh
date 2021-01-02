@@ -87,13 +87,6 @@ cd "${TON_BUILD_DIR}"
 
 cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPORTABLE=OFF
 
-# ====================================================================
-# sed -i.bak 's%TD_LINUX%TD_LINUX \|\| TD_FREEBSD%g' "${TON_SRC_DIR}/memprof/memprof/memprof.cpp"
-# sed -i.bak 's%TD_LINUX%TD_LINUX \|\| TD_FREEBSD%g' "${TON_SRC_DIR}/tdutils/td/utils/port/FileFd.cpp"
-# sed -i.bak 's%TD_LINUX%TD_LINUX \|\| TD_FREEBSD%g' "${TON_SRC_DIR}/tdutils/td/utils/port/rlimit.cpp"
-# sed -i.bak 's%TD_LINUX%TD_LINUX \|\| TD_FREEBSD%g' "${TON_SRC_DIR}/tdutils/td/utils/port/user.cpp"
-# ====================================================================
-
 ninja
 
 echo "INFO: build a node... DONE"
