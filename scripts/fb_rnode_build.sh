@@ -50,7 +50,11 @@ rustup update
 git clone --recurse-submodules https://github.com/tonlabs/ton-labs-node.git $RNODE_SRC_DIR
 cd $RNODE_SRC_DIR
 cargo update
-cargo build --release
+
+sed -i.bak 's%features = \[\"cmake_build\", \"dynamic_linking\"\]%features = \[\"cmake_build\"\]%g' Cargo.toml
+
+#cargo build --release
+cargo build --release --features "external_db,metrics"
 
 [[ ! -d $HOME/bin ]] && mkdir -p $HOME/bin
 cp -f ${RNODE_SRC_DIR}/target/release/ton_node $HOME/bin/rnode
