@@ -82,10 +82,11 @@ fi
 SRC_ACCOUNT=`cat ${KEYS_DIR}/${SRC_NAME}.addr`
 DST_ACCOUNT=`cat ${KEYS_DIR}/${DST_NAME}.addr`
 SRC_KEY_FILE="${KEYS_DIR}/${1}.keys.json"
+SRC_WC=`echo "$SRC_ACCOUNT" | cut -d ':' -f 1`
 
 #================================================================
 # Check Keys
-Calc_Addr=$($CALL_TC genaddr ${SafeSCs_DIR}/SafeMultisigWallet.tvc ${SafeC_Wallet_ABI} --setkey $SRC_KEY_FILE --wc "0" | grep "Raw address:" | awk '{print $3}')
+Calc_Addr=$($CALL_TC genaddr ${SafeSCs_DIR}/SafeMultisigWallet.tvc ${SafeC_Wallet_ABI} --setkey $SRC_KEY_FILE --wc "$SRC_WC" | grep "Raw address:" | awk '{print $3}')
 if [[ ! "$SRC_ACCOUNT" == "$Calc_Addr" ]];then
     echo "###-ERROR(line $LINENO): Given account address and calculated address is different. Wrong keys. Can't continue. "
     echo "Given addr: $SRC_ACCOUNT"

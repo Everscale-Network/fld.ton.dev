@@ -153,6 +153,7 @@ SHELL=/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/home/$SCRPT_USER/bin
 HOME=/home/$SCRPT_USER
 */2 * * * *    cd ${SCRIPT_DIR} && ./rise_node_if_down.sh >> /var/ton-work/validator_msig.log
+30 12 * * *    cd ${SCRIPT_DIR} && ./rotate_nodelog.sh
 $NXT_ELECT_1 * * *    cd ${SCRIPT_DIR} && ./dtik_depool.sh >> ${TON_LOG_DIR}/validator_msig.log
 $NXT_ELECT_2 * * *    cd ${SCRIPT_DIR} && ./dlt-validator_depool.sh >> ${TON_LOG_DIR}/validator_msig.log
 $NXT_ELECT_3 * * *    cd ${SCRIPT_DIR} && ./Sign_Val_Trans.sh >> ${TON_LOG_DIR}/validator_msig.log
@@ -164,7 +165,8 @@ _ENDCRN_
 else
 
 CRONT_JOBS=$(cat <<-_ENDCRN_
-*/2 * * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./rise_node_if_down.sh >> /var/ton-work/validator_msig.log
+*/2 * * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./rise_node_if_down.sh >> /var/ton-work/validator_msig.log"
+30 12 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./rotate_nodelog.sh"
 $NXT_ELECT_1 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./dtik_depool.sh >> ${TON_LOG_DIR}/validator_msig.log"
 $NXT_ELECT_2 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./dlt-validator_depool.sh >> ${TON_LOG_DIR}/validator_msig.log"
 $NXT_ELECT_3 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./Sign_Val_Trans.sh >> ${TON_LOG_DIR}/validator_msig.log"

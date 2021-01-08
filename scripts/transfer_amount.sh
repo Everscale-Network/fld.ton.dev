@@ -82,6 +82,7 @@ if [[ -z $SRC_ACCOUNT ]];then
     echo "###-ERROR(line $LINENO): Can't find SRC address! ${KEYS_DIR}/${SRC_ACCOUNT}.addr"
     exit 1
 fi
+SRC_WC=`echo "$SRC_ACCOUNT" | cut -d ':' -f 1`
 
 DST_ACCOUNT=`cat ${KEYS_DIR}/${DST_NAME}.addr`
 if [[ -z $DST_ACCOUNT ]];then
@@ -109,7 +110,7 @@ DST_TIME=`echo "$DST_BALANCE_INFO" | grep last_paid | gawk '{ print strftime("%Y
 
 #================================================================
 # Check Keys
-Calc_Addr=$($CALL_TC genaddr ${SafeSCs_DIR}/SafeMultisigWallet.tvc ${SafeC_Wallet_ABI} --setkey $SRC_KEY_FILE --wc "0" | grep "Raw address:" | awk '{print $3}')
+Calc_Addr=$($CALL_TC genaddr ${SafeSCs_DIR}/SafeMultisigWallet.tvc ${SafeC_Wallet_ABI} --setkey $SRC_KEY_FILE --wc "$SRC_WC" | grep "Raw address:" | awk '{print $3}')
 if [[ ! "$SRC_ACCOUNT" == "$Calc_Addr" ]];then
     echo "###-ERROR(line $LINENO): Given account address and calculated address is different. Wrong keys. Can't continue. "
     echo "Given addr: $SRC_ACCOUNT"
