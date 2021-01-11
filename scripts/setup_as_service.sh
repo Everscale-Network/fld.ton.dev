@@ -28,7 +28,7 @@ RestartSec=1
 User=$USER
 LimitNOFILE=2048000
 
-ExecStart=$CALL_VE -v $verb -t $USE_THREADS ${ENGINE_ADDITIONAL_PARAMS} -C ${TON_WORK_DIR}/etc/ton-global.config.json --db ${TON_WORK_DIR}/db >> ${TON_LOG_DIR}/node.log
+ExecStart=/bin/bash -c "exec $CALL_VE -v $verb -t $USE_THREADS ${ENGINE_ADDITIONAL_PARAMS} -C ${TON_WORK_DIR}/etc/ton-global.config.json --db ${TON_WORK_DIR}/db >> ${TON_LOG_DIR}/node.log 2>&1"
 
 [Install]
 WantedBy=multi-user.target
