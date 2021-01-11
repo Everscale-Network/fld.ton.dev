@@ -19,7 +19,7 @@ echo "############## - !!! Restart NODE !!! - ##############"
 echo "$(date)"
 ./run.sh $verb
 
-VAL_PID=`ps -ax | grep "validator\-engine" | awk '{print $1}'`
+VAL_PID=`ps -ax | grep "validator\-engine"| grep -v "validator\-engine\-console" | awk '{print $1}'`
 if [[ -z $VAL_PID ]]; then
   while true
   do
