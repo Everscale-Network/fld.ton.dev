@@ -26,9 +26,11 @@ Type=simple
 Restart=always
 RestartSec=1
 User=$USER
+StandardOutput=append:${TON_LOG_DIR}/node.log
+StandardError=append:${TON_LOG_DIR}/node.log
 LimitNOFILE=2048000
 
-ExecStart=/bin/bash -c "exec $CALL_VE -v $verb -t $USE_THREADS ${ENGINE_ADDITIONAL_PARAMS} -C ${TON_WORK_DIR}/etc/ton-global.config.json --db ${TON_WORK_DIR}/db >> ${TON_LOG_DIR}/node.log 2>&1"
+ExecStart=$CALL_VE -v $verb -t $USE_THREADS ${ENGINE_ADDITIONAL_PARAMS} -C ${TON_WORK_DIR}/etc/ton-global.config.json --db ${TON_WORK_DIR}/db
 
 [Install]
 WantedBy=multi-user.target
@@ -44,8 +46,11 @@ cat ${SERVICE_FILE}
 echo "============================================="
 echo
 
-# sudo systemctl enable ton-node
-# sudo systemctl start ton-node
-# service ton-node status
-
+echo "To restart updated service run all follow commands:"
+echo
+echo "sudo systemctl daemon-reload"
+echo "sudo systemctl disable ton-node"
+echo "sudo systemctl enable ton-node"
+echo "sudo service ton-node restart"
+echo
 exit 0
