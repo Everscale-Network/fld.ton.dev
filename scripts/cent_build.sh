@@ -32,16 +32,12 @@ if [ "${INSTALL_DEPENDENCIES}" = "yes" ]; then
     sudo dnf -y group list ids 
     sudo dnf -y group install "Development Tools"
     sudo dnf -y config-manager --set-enabled powertools
-    sudo dnf -y install cargo
-    sudo dnf -y install curl jq wget bc vim logrotate
-    sudo dnf -y install gperf
-    sudo dnf -y install snappy snappy-devel
-    sudo dnf -y install zlib zlib-devel
-    sudo dnf -y install bzip2 bzip2-devel
-    sudo dnf -y install lz4-devel
-    sudo dnf -y install libmicrohttpd-devel
-    sudo dnf -y install readline-devel openssl-devel zlib-devel
-    sudo dnf -y install ninja-build
+    sudo dnf --enablerepo=extras install -y epel-release
+    sudo dnf -y install ccache curl jq wget bc vim logrotate
+    sudo dnf -y install gperf snappy snappy-devel
+    sudo dnf -y install zlib zlib-devel bzip2 bzip2-devel
+    sudo dnf -y install lz4-devel libmicrohttpd-devel
+    sudo dnf -y install readline-devel openssl-devel zlib-devel  ninja-build
 #------------------------------------------------------
     echo "INFO: Install gflags"
     if [[ ! -d "/usr/local/include/gflags" ]];then
@@ -53,17 +49,7 @@ if [ "${INSTALL_DEPENDENCIES}" = "yes" ]; then
     ./configure && make && sudo make install
     rm -rf ${SCRIPT_DIR}/src
     fi
-#-------------------------------------------------------
-    echo "INFO: Install epel"
-    if [[ -z `dnf info epel-release | grep "Release"|awk -F ":" '{print $2}'` ]];then
-    rm -rf ${SCRIPT_DIR}/src
-    mkdir -p ${SCRIPT_DIR}/src && cd ${SCRIPT_DIR}/src
-    wget https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/e/epel-release-8-8.el8.noarch.rpm
-    sudo rpm -Uvh epel-release*rpm
-    sudo dnf -y install ccache
-    rm -rf ${SCRIPT_DIR}/src
-    fi
-#-------------------------------------------------------
+##-------------------------------------------------------
     sudo dnf -y install cmake
 
     cd ${SCRIPT_DIR}

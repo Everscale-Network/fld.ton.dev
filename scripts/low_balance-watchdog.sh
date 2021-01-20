@@ -236,7 +236,7 @@ else
 fi
 
 echo "Validator_addr: $Validator_addr"
-echo "Has Status: $Validator_Status,  balance : $(echo "scale=3; $((Validator_AMOUNT)) / 1000000000" | $CALL_BC) tokens | Last op: $Validator_LAST_TR_TIME"
+echo "Has Status: $Validator_Status,  balance : $(echo "scale=3; $((Validator_AMOUNT_nt)) / 1000000000" | $CALL_BC) tokens | Last op: $Validator_LAST_TR_TIME"
 echo
 
 # "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "Current balance: $((AMOUNT/1000000000))" 2>&1 > /dev/null
