@@ -1,12 +1,19 @@
 #!/bin/bash 
 
+OS_SYSTEM=`uname -s`
+
 export NETWORK_TYPE="fld.ton.dev"
 export MAIN_NET_ID="58FFCA1A178DAFF7"
 export DEV_NET_ID="A8069625AC5BF68F"
 export FLD_NET_ID="C3D81D4021421866"
 
 export MASTER_NODE="fld01"
-export NODE_IP_ADDR="$(curl -sS ipv4bot.whatismyipaddress.com)"
+if [[ "$OS_SYSTEM" == "Linux" ]];then
+    export NODE_IP_ADDR="$(ip a|grep -w inet| grep global | awk '{print $2}' | cut -d "/" -f 1)"
+else
+    export NODE_IP_ADDR="$(ifconfig -u |grep -w inet|grep -v '127.0.0.1'|head -1|awk '{print $2}')"
+fi
+#export NODE_IP_ADDR="$(curl -sS ipv4bot.whatismyipaddress.com)"
 export ADNL_PORT="30310"
 export NODE_ADDRESS="${NODE_IP_ADDR}:${ADNL_PORT}"
 
