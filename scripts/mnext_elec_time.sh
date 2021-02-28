@@ -65,7 +65,7 @@ fi
 ELECTIONS_WORK_DIR="${KEYS_DIR}/elections"
 ELECTIONS_HISTORY_DIR="${KEYS_DIR}/elections_hist"
 [[  ! -d $ELECTIONS_WORK_DIR ]] && mkdir -p $ELECTIONS_WORK_DIR
-[[  ! -d $ELECTIONS_HISTORY_DIR ]] && mkdir -p $ELECTIONS_HISTORY_DIR
+[[  ! -d ${ELECTIONS_HISTORY_DIR} ]] && mkdir -p ${ELECTIONS_HISTORY_DIR}
 
 CALL_LC="${TON_BUILD_DIR}/lite-client/lite-client -p ${KEYS_DIR}/liteserver.pub -a $LITESERVER_IP:$LITESERVER_PORT -t 5"
 
@@ -185,7 +185,7 @@ $NXT_ELECT_1 * * *    cd ${SCRIPT_DIR} && ./lt-validator_msig.sh 1 >> ${TON_LOG_
 $NXT_ELECT_2 * * *    cd ${SCRIPT_DIR} && ./mnext_elec_time.sh >> /var/ton-work/validator_msig.log && ./balance_check.sh >> ${TON_LOG_DIR}/validator_msig.log
 $CUR_ELECT_3 * * *    cd ${SCRIPT_DIR} && ./lt-validator_msig.sh $STAKE_AMNT >> ${TON_LOG_DIR}/validator_msig.log
 $CUR_ELECT_4 * * *    cd ${SCRIPT_DIR} && ./participant_list.sh >> ${TON_LOG_DIR}/validator_msig.log && ./balance_check.sh >> ${TON_LOG_DIR}/validator_msig.log
-$END_OF_ELECTIONS * * *    cd ${SCRIPT_DIR} && ./get_participant_list.sh > $END_OF_ELECTIONS/${election_id}_parts.lst && chmod 444 $END_OF_ELECTIONS/${election_id}_parts.lst
+$END_OF_ELECTIONS * * *    cd ${SCRIPT_DIR} && ./get_participant_list.sh > ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst && chmod 444 ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst
 _ENDCRN_
 )
 
@@ -197,7 +197,7 @@ $NXT_ELECT_1 * * *    script --return --quiet --append --command "cd ${SCRIPT_DI
 $NXT_ELECT_2 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./mnext_elec_time.sh >> ${TON_LOG_DIR}/validator_msig.log && ./balance_check.sh >> ${TON_LOG_DIR}/validator_msig.log"
 $CUR_ELECT_3 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./lt-validator_msig.sh $STAKE_AMNT >> ${TON_LOG_DIR}/validator_msig.log"
 $CUR_ELECT_4 * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./participant_list.sh >> ${TON_LOG_DIR}/validator_msig.log && ./balance_check.sh >> ${TON_LOG_DIR}/validator_msig.log"
-$END_OF_ELECTIONS * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./get_participant_list.sh > $ELECTIONS_HISTORY_DIR/${election_id}_parts.lst && chmod 444 $ELECTIONS_HISTORY_DIR/${election_id}_parts.lst"
+$END_OF_ELECTIONS * * *    script --return --quiet --append --command "cd ${SCRIPT_DIR} && ./get_participant_list.sh > ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst && chmod 444 ${ELECTIONS_HISTORY_DIR}/${election_id}_parts.lst"
 _ENDCRN_
 )
 
