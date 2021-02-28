@@ -5,7 +5,7 @@ OS_SYSTEM=`uname -s`
 export NETWORK_TYPE="fld.ton.dev"
 export MAIN_NET_ID="58FFCA1A178DAFF7"
 export DEV_NET_ID="A8069625AC5BF68F"
-export FLD_NET_ID="C3D81D4021421866"
+export FLD_NET_ID="7DD90C073A156C39"
 
 export MASTER_NODE="fld01"
 if [[ "$OS_SYSTEM" == "Linux" ]];then
