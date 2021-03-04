@@ -19,6 +19,6 @@ WPer=`echo "$VestRound"|jq -r '.withdrawalPeriod'`
 Wval=`echo "$VestRound"|jq -r '.withdrawalValue'`
 Value=`echo "$VestRound"|jq -r '.withdrawalValue'`
 
-echo "Your will receive vesting payment $((Value / 1000000000)) at $(TD_unix2human $((LWT + WPer)))"
+echo "Your will receive vesting total payment $((Value * 2 / 1000000000)) at $(TD_unix2human $((LWT + WPer))), divided equally into two rounds."
 
 exit 0
