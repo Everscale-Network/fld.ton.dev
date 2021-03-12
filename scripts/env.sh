@@ -7,6 +7,27 @@ export MAIN_NET_ID="58FFCA1A178DAFF7"
 export DEV_NET_ID="A8069625AC5BF68F"
 export FLD_NET_ID="1BA9AB32ADCE75B3"
 
+NetName="${NETWORK_TYPE%%.*}"
+case "$NetName" in
+    main)
+        export DApp_URL="https://main.ton.dev"
+        ;;
+    net)
+        export DApp_URL="https://net.ton.dev"
+        ;;
+    fld)
+        export DApp_URL="https://gql.custler.net"
+        ;;
+    rustnet)
+        export DApp_URL="https://rustnet.ton.dev"
+        ;;
+    *)
+        echo "###-ERROR(line $LINENO in echo ${0##*/}): Unknown NETWORK_TYPE (${NETWORK_TYPE})"
+        exit 1
+        ;;
+esac
+jq --arg a "${DApp_URL}" '.url = $a' tonos-cli.conf.json > tmp.tmp && mv -f tmp.tmp tonos-cli.conf.json 
+
 export MASTER_NODE="fld01"
 if [[ "$OS_SYSTEM" == "Linux" ]];then
     export NODE_IP_ADDR="$(ip a|grep -w inet| grep global | awk '{print $2}' | cut -d "/" -f 1)"
