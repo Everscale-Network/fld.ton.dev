@@ -5,7 +5,7 @@ OS_SYSTEM=`uname -s`
 export NETWORK_TYPE="fld.ton.dev"
 export MAIN_NET_ID="58FFCA1A178DAFF7"
 export DEV_NET_ID="A8069625AC5BF68F"
-export FLD_NET_ID="96717B78DF5ABF6A"
+export FLD_NET_ID="06658C2749770B3A"
 
 NetName="${NETWORK_TYPE%%.*}"
 case "$NetName" in
