@@ -2,6 +2,8 @@
 
 ## **ANY TOKENS IN THIS NETWORK ARE INTENDED FOR TESTING PURPOSES ONLY AND ARE NO OTHER PURPOSE. THE NETWORK RESTART FREQUENTLY AND ALL TOKENS WILL BE LOST** 
 
+# The scripts in this repository DEPRECATED and not supported!!! Please use https://github.com/FreeTON-Network/custler.uninode instead !!!
+
 **This repository of Free TON node has purpose to develop and test any kind of cases which can be dangerous for developer network and moreover main network. You are welcome for any activity which you can imagine! NO limits at all!**
 # Getting Started
 
